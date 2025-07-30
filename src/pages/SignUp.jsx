@@ -264,33 +264,23 @@ const SignUp = () => {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex items-center justify-center p-12 relative z-10">
-          <div className="text-center text-white max-w-md">
-            {/* Large product showcase */}
-            <div className="mb-8 relative">
-              <div className="w-64 h-64 mx-auto bg-white/10 backdrop-blur-sm rounded-3xl flex items-center justify-center border border-white/20">
-                <div className="w-48 h-48 bg-white/20 rounded-2xl flex items-center justify-center">
-                  <Camera size={64} className="text-white/80" />
-                </div>
+        <div className="flex-1 flex items-end justify-center p-12 relative z-10">
+          <div className="text-center text-white max-w-md mb-16">
+            {/* Text with gradient fade background for better readability */}
+            <div className="relative p-8 rounded-2xl bg-gradient-to-t from-black/80 via-black/40 to-transparent backdrop-blur-sm">
+              <h2 className="text-3xl font-bold mb-4">
+                Create Professional Photos
+              </h2>
+              <p className="text-lg text-white/95 mb-8">
+                Join thousands of creators transforming their products into stunning visuals that drive sales and success.
+              </p>
+
+              {/* Navigation dots */}
+              <div className="flex justify-center gap-2">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="w-2 h-2 bg-white/50 rounded-full"></div>
+                <div className="w-2 h-2 bg-white/50 rounded-full"></div>
               </div>
-              {/* Floating elements */}
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20"></div>
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-white/10 rounded-xl backdrop-blur-sm border border-white/20"></div>
-              <div className="absolute top-8 -right-8 w-8 h-8 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20"></div>
-            </div>
-
-            <h2 className="text-3xl font-bold mb-4">
-              Create Professional Photos
-            </h2>
-            <p className="text-lg text-white/90 mb-8">
-              Join thousands of creators transforming their products into stunning visuals that drive sales and success.
-            </p>
-
-            {/* Navigation dots */}
-            <div className="flex justify-center gap-2">
-              <div className="w-2 h-2 bg-white rounded-full"></div>
-              <div className="w-2 h-2 bg-white/50 rounded-full"></div>
-              <div className="w-2 h-2 bg-white/50 rounded-full"></div>
             </div>
           </div>
         </div>

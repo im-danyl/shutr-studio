@@ -89,7 +89,7 @@ const LandingHeader = () => {
               Sign In
             </button>
             <button 
-              onClick={() => openAuthModal('signup')}
+              onClick={() => openAuthModal('getstarted')}
               className="button variant-default size-default"
             >
               Get Started

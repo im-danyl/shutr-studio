@@ -35,9 +35,12 @@ const Header = () => {
                 >
                   Browse Styles
                 </Link>
-                <button className="button variant-default size-default">
+                <Link 
+                  to="/signin"
+                  className="button variant-default size-default"
+                >
                   Sign In
-                </button>
+                </Link>
               </>
             ) : (
               // App Navigation (for authenticated users)

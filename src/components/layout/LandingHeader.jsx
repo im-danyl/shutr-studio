@@ -1,24 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { Camera } from 'lucide-react'
-import AuthModal from '../auth/AuthModal'
 
 const LandingHeader = () => {
-  const [authModal, setAuthModal] = useState({ isOpen: false, mode: 'signin' })
-
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
-  }
-
-  const openAuthModal = (mode = 'signin') => {
-    setAuthModal({ isOpen: true, mode })
-  }
-
-  const closeAuthModal = () => {
-    setAuthModal({ isOpen: false, mode: 'signin' })
   }
 
   return (
@@ -82,28 +71,21 @@ const LandingHeader = () => {
 
           {/* Auth Actions */}
           <div className="flex items-center" style={{ gap: '12px' }}>
-            <button 
-              onClick={() => openAuthModal('signin')}
+            <Link 
+              to="/signin"
               className="button variant-outline size-default"
             >
               Sign In
-            </button>
-            <button 
-              onClick={() => openAuthModal('getstarted')}
+            </Link>
+            <Link 
+              to="/signup"
               className="button variant-default size-default"
             >
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </div>
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModal.isOpen}
-        onClose={closeAuthModal}
-        mode={authModal.mode}
-      />
     </header>
   )
 }

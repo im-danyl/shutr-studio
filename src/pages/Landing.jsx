@@ -1,18 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, ArrowRight, Camera } from 'lucide-react'
-import AuthModal from '../components/auth/AuthModal'
 
 const Landing = () => {
-  const [authModal, setAuthModal] = useState({ isOpen: false, mode: 'getstarted' })
-
-  const openAuthModal = (mode = 'getstarted') => {
-    setAuthModal({ isOpen: true, mode })
-  }
-
-  const closeAuthModal = () => {
-    setAuthModal({ isOpen: false, mode: 'getstarted' })
-  }
   return (
     <div className="main-container" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="text-center max-w-4xl mx-auto">
@@ -34,22 +24,22 @@ const Landing = () => {
           }
         `}</style>
         <div className="cta-buttons" style={{ display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center', marginBottom: '32px' }}>
-          <button 
-            onClick={() => openAuthModal('getstarted')}
+          <Link 
+            to="/signup"
             className="button variant-default size-lg"
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <Sparkles style={{ marginRight: '8px', width: '20px', height: '20px' }} />
             Get Started Free
-          </button>
-          <button 
-            onClick={() => openAuthModal('getstarted')}
+          </Link>
+          <Link 
+            to="/styles"
             className="button variant-outline size-lg"
             style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
           >
             Browse Styles
             <ArrowRight style={{ marginLeft: '8px', width: '20px', height: '20px' }} />
-          </button>
+          </Link>
         </div>
 
         {/* Features */}
@@ -109,12 +99,6 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModal.isOpen}
-        onClose={closeAuthModal}
-        mode={authModal.mode}
-      />
     </div>
   )
 }

@@ -157,7 +157,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background overlay */}
       <div 
         className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
@@ -165,9 +165,9 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
       />
       
       {/* Main container */}
-      <div className="relative w-full h-full flex bg-white dark:bg-gray-900 shadow-2xl">
+      <div className="relative w-full max-w-5xl h-full max-h-[85vh] flex bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden">
         {/* Left side - Hero section */}
-        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
           {/* Gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-orange-400 via-red-500 to-pink-600" />
           
@@ -191,7 +191,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
         </div>
 
         {/* Right side - Auth form */}
-        <div className="w-full lg:w-1/2 flex flex-col">
+        <div className="w-full md:w-1/2 flex flex-col">
           {/* Close button */}
           <div className="flex justify-end p-6">
             <button
@@ -203,8 +203,15 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
             </button>
           </div>
 
+          {/* Mobile gradient header - only show on small screens */}
+          <div className="md:hidden w-full h-24 bg-gradient-to-r from-orange-400 to-pink-500 relative">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <h1 className="text-white text-xl font-bold">Shutr Studio</h1>
+            </div>
+          </div>
+
           {/* Form content */}
-          <div className="flex-1 flex flex-col justify-center px-8 pb-8">
+          <div className="flex-1 flex flex-col justify-center px-6 md:px-8 pb-8">
             <div className="max-w-sm mx-auto w-full">
               {/* Header */}
               <div className="text-center mb-8">

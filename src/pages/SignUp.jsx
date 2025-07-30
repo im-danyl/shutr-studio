@@ -246,15 +246,25 @@ const SignUp = () => {
       </div>
 
       {/* Right side - Brand showcase */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #00F5A0, #00D9F5, #0080FF)' }}>
+      <div 
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/luxury-product.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
         {/* Brand logo */}
-        <div className="absolute top-8 right-8 flex items-center gap-2 text-white">
+        <div className="absolute top-8 right-8 flex items-center gap-2 text-white z-10">
           <Camera size={32} />
           <span className="text-xl font-bold">Shutr Studio</span>
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex items-center justify-center p-12">
+        <div className="flex-1 flex items-center justify-center p-12 relative z-10">
           <div className="text-center text-white max-w-md">
             {/* Large product showcase */}
             <div className="mb-8 relative">

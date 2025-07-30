@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import StyleLibrary from './pages/StyleLibrary'
@@ -13,10 +14,38 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/styles" element={<StyleLibrary />} />
-          <Route path="/generate" element={<Generate />} />
-          <Route path="/results/:id" element={<Results />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/styles" 
+            element={
+              <ProtectedRoute>
+                <StyleLibrary />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/generate" 
+            element={
+              <ProtectedRoute>
+                <Generate />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/results/:id" 
+            element={
+              <ProtectedRoute>
+                <Results />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </Layout>
     </Router>

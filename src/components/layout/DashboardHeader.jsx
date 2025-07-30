@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Camera, User, Settings, LogOut, ChevronDown } from 'lucide-react'
+import useAuthStore from '../../store/authStore'
 
 const DashboardHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
   const location = useLocation()
+  const { user, signOut, initialize } = useAuthStore()
   
   const isActive = (path) => location.pathname === path
+
+  useEffect(() => {
+    initialize()
+  }, [initialize])
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      setUserMenuOpen(false)
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Sign out error:', error)
+    }
+  }
 
   return (
     <header style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--surface)' }}>
@@ -69,7 +85,9 @@ const DashboardHeader = () => {
               }}
             >
               <User style={{ width: '20px', height: '20px' }} />
-              <span style={{ fontSize: '14px' }}>Account</span>
+              <span style={{ fontSize: '14px' }}>
+                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Account'}
+              </span>
               <ChevronDown 
                 style={{ 
                   width: '16px', 
@@ -123,10 +141,7 @@ const DashboardHeader = () => {
                     fontSize: '14px',
                     transition: 'background-color 0.2s ease'
                   }}
-                  onClick={() => {
-                    setUserMenuOpen(false)
-                    // Add logout logic here
-                  }}
+                  onClick={handleSignOut}
                 >
                   <LogOut style={{ width: '16px', height: '16px' }} />
                   <span>Sign Out</span>

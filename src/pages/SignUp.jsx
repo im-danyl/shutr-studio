@@ -102,7 +102,7 @@ const SignUp = () => {
           </Link>
           
           <div className="lg:hidden flex items-center gap-2">
-            <Camera size={24} className="text-orange-500" />
+            <Camera size={24} className="text-cyan-500" />
             <span className="text-lg font-bold text-gray-900">Shutr Studio</span>
           </div>
         </div>
@@ -137,7 +137,7 @@ const SignUp = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:outline-none transition-all text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 placeholder-gray-500"
                   placeholder="arianzesanj"
                   disabled={loading}
                   required
@@ -153,7 +153,7 @@ const SignUp = () => {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:outline-none transition-all text-gray-900 placeholder-gray-500"
+                    className="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 focus:outline-none transition-all text-gray-900 placeholder-gray-500"
                     placeholder="enter your password"
                     disabled={loading}
                     required
@@ -179,7 +179,8 @@ const SignUp = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-semibold rounded-lg transition-all duration-200 focus:ring-4 focus:ring-orange-200 focus:outline-none hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 text-white font-semibold rounded-lg transition-all duration-200 focus:ring-4 focus:ring-cyan-200 focus:outline-none hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ background: 'linear-gradient(90deg, #00F5A0, #00D9F5, #0080FF)' }}
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -228,7 +229,7 @@ const SignUp = () => {
               {' '}
               <Link
                 to="/signin"
-                className="text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors"
+                className="text-sm font-semibold text-cyan-500 hover:text-cyan-600 transition-colors"
               >
                 Sign in
               </Link>
@@ -245,7 +246,7 @@ const SignUp = () => {
       </div>
 
       {/* Right side - Brand showcase */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-400 via-orange-500 to-pink-500 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #00F5A0, #00D9F5, #0080FF)' }}>
         {/* Brand logo */}
         <div className="absolute top-8 right-8 flex items-center gap-2 text-white">
           <Camera size={32} />

@@ -77,8 +77,12 @@ const SignUp = () => {
         return
       }
 
-      // Success - redirect to generate page
-      navigate('/generate')
+      // Success - wait a moment for auth state to update, then redirect
+      if (data.session) {
+        setTimeout(() => {
+          navigate('/generate')
+        }, 100)
+      }
     } catch (error) {
       console.error('Email auth error:', error)
       setError(error.message || 'Failed to sign up')

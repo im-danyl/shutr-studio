@@ -65,7 +65,7 @@ const ProtectedRoute = ({ children }) => {
             Please sign in to access this page and start creating amazing product photos.
           </p>
           <button
-            onClick={() => window.location.href = '/'}
+            onClick={() => window.location.href = '/signin'}
             className="px-6 py-3 rounded-xl font-medium transition-all duration-200"
             style={{
               background: 'var(--accent-gradient)',

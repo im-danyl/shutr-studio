@@ -147,16 +147,17 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div 
-        className="bg-white rounded-2xl max-w-md w-full p-8 relative"
+        className="bg-white rounded-2xl max-w-lg w-full p-8 relative shadow-2xl"
         style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-6 right-6 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg p-1"
+          style={{ color: 'var(--text-muted)' }}
           disabled={loading}
         >
-          <X size={24} />
+          <X size={20} />
         </button>
 
         {/* Header */}
@@ -194,7 +195,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
         <button
           onClick={handleGoogleAuth}
           disabled={loading || emailCheckLoading}
-          className="w-full flex items-center justify-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 mb-6 hover:shadow-md"
+          className="w-full flex items-center justify-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 mb-6 hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
           style={{
             borderColor: 'var(--border)',
             backgroundColor: 'var(--surface)',
@@ -202,7 +203,11 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
             opacity: loading || emailCheckLoading ? 0.6 : 1
           }}
         >
-          <Chrome size={20} />
+          {loading || emailCheckLoading ? (
+            <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
+          ) : (
+            <Chrome size={20} />
+          )}
           <span className="font-medium">
             Continue with Google
           </span>
@@ -231,7 +236,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-xl border transition-colors"
+                className="w-full pl-12 pr-4 py-3 rounded-xl border transition-colors focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                 style={{
                   borderColor: 'var(--border)',
                   backgroundColor: 'var(--surface)',
@@ -268,7 +273,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border transition-colors"
+                className="w-full px-4 py-3 rounded-xl border transition-colors focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
                 style={{
                   borderColor: 'var(--border)',
                   backgroundColor: 'var(--surface)',
@@ -285,10 +290,11 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
           <button
             type="submit"
             disabled={loading || emailCheckLoading}
-            className="w-full py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl font-medium transition-all duration-200 flex items-center justify-center gap-2 focus:ring-2 focus:ring-blue-500 focus:outline-none hover:shadow-lg disabled:cursor-not-allowed"
             style={{
               background: (loading || emailCheckLoading) ? 'var(--text-muted)' : 'var(--accent-gradient)',
-              color: 'white'
+              color: 'white',
+              opacity: (loading || emailCheckLoading) ? 0.7 : 1
             }}
           >
             {emailCheckLoading && 'Checking...'}

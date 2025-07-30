@@ -3,7 +3,7 @@ import { X, Mail, Chrome, ArrowRight } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 
 const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
-  const [mode, setMode] = useState(initialMode) // 'getstarted', 'signin', 'signup'
+  const [mode, setMode] = useState(initialMode) // 'getstarted', 'signin', 'signup' - v2
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

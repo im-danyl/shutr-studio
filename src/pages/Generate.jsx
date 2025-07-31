@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import useAuthStore from '../store/authStore';
+import useCreditStore from '../store/creditStore';
+import CreditCostPreview from '../components/credits/CreditCostPreview';
+import InsufficientCreditsModal from '../components/credits/InsufficientCreditsModal';
 
 // Mock data for reference images
 const mockReferenceImages = [
@@ -585,6 +589,11 @@ const Generate = () => {
   const [generatedImages, setGeneratedImages] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [theme, setTheme] = useState('light'); // 'light' or 'dark'
+  const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+  
+  // Auth and Credit stores
+  const { user } = useAuthStore();
+  const { credits, fetchCredits, consumeCredits, checkCreditsAvailable } = useCreditStore();
 
   // Filter states for reference gallery
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -595,23 +604,50 @@ const Generate = () => {
   const aspectRatios = ['All', '1:1', '3:4', '4:3', '9:16', '16:9'];
   const moods = ['All', 'Minimalist', 'Dramatic', 'Natural', 'Studio', 'Artistic'];
 
+  // Fetch credits when user changes
+  useEffect(() => {
+    if (user) {
+      fetchCredits(user.id);
+    }
+  }, [user, fetchCredits]);
+
   const handleGenerate = async () => {
-    if (!productImage) return;
-    setIsGenerating(true);
-    setGeneratedImages([]);
-    setCurrentStep(3);
-
-    await new Promise(resolve => setTimeout(resolve, 2500));
-
-    const mockGenerated = [
-      'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=512&h=512&fit=crop',
-      'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=512&h=512&fit=crop',
-      'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=512&h=512&fit=crop',
-      'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=512&h=512&fit=crop'
-    ].slice(0, settings.variants);
+    if (!productImage || !user) return;
     
-    setGeneratedImages(mockGenerated);
-    setIsGenerating(false);
+    // Check if user has enough credits
+    if (!checkCreditsAvailable(settings.variants)) {
+      setShowInsufficientCreditsModal(true);
+      return;
+    }
+
+    try {
+      setIsGenerating(true);
+      setGeneratedImages([]);
+      setCurrentStep(3);
+
+      // Generate a unique ID for this generation
+      const generationId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      // Consume credits first
+      await consumeCredits(user.id, settings.variants, generationId);
+
+      // Simulate AI generation
+      await new Promise(resolve => setTimeout(resolve, 2500));
+
+      const mockGenerated = [
+        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=512&h=512&fit=crop',
+        'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=512&h=512&fit=crop',
+        'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=512&h=512&fit=crop',
+        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=512&h=512&fit=crop'
+      ].slice(0, settings.variants);
+      
+      setGeneratedImages(mockGenerated);
+    } catch (error) {
+      console.error('Generation failed:', error);
+      // Credits would be refunded automatically by the backend in a real scenario
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const resetFlow = () => {
@@ -731,11 +767,25 @@ const Generate = () => {
                     <UploadDropzone onFileUploaded={handleProductUpload} />
                   )}
                   <SettingsAccordion settings={settings} onSettingsChange={setSettings} />
+                  
+                  {/* Credit Cost Preview */}
+                  {user && credits !== null && (
+                    <CreditCostPreview 
+                      variantCount={settings.variants}
+                      userCredits={credits}
+                      className="mt-4"
+                    />
+                  )}
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '16px' }}>
                   <Button variant="outline" onClick={() => setCurrentStep(1)}>Back to Style</Button>
-                  <Button onClick={handleGenerate} disabled={!productImage}>Generate Images</Button>
+                  <Button 
+                    onClick={handleGenerate} 
+                    disabled={!productImage || !user || (credits !== null && credits < settings.variants)}
+                  >
+                    Generate Images {user && credits !== null && `(${settings.variants} credit${settings.variants !== 1 ? 's' : ''})`}
+                  </Button>
                 </div>
               </div>
             )}
@@ -769,6 +819,15 @@ const Generate = () => {
           </div>
         </div>
       </div>
+      
+      {/* Modals */}
+      <InsufficientCreditsModal
+        isOpen={showInsufficientCreditsModal}
+        onClose={() => setShowInsufficientCreditsModal(false)}
+        currentCredits={credits || 0}
+        requiredCredits={settings.variants}
+        variantCount={settings.variants}
+      />
     </div>
   );
 };

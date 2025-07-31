@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Upload, Palette, Download, Plus } from 'lucide-react'
+import CreditBalance from '../components/credits/CreditBalance'
 
 const Dashboard = () => {
   return (
@@ -8,12 +9,17 @@ const Dashboard = () => {
       <div className="content-container">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 style={{ marginBottom: '8px' }}>
-            Welcome to Shutr Studio
-          </h2>
-          <p style={{ color: 'var(--text-muted)' }}>
-            Transform your product photos with AI-powered styling
-          </p>
+          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+            <div>
+              <h2 style={{ marginBottom: '8px' }}>
+                Welcome to Shutr Studio
+              </h2>
+              <p style={{ color: 'var(--text-muted)' }}>
+                Transform your product photos with AI-powered styling
+              </p>
+            </div>
+            <CreditBalance />
+          </div>
         </div>
 
         {/* Quick Actions */}

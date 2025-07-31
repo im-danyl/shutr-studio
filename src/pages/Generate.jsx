@@ -3,6 +3,7 @@ import useAuthStore from '../store/authStore';
 import useCreditStore from '../store/creditStore';
 import CreditCostPreview from '../components/credits/CreditCostPreview';
 import InsufficientCreditsModal from '../components/credits/InsufficientCreditsModal';
+import SuccessCelebration from '../components/ui/SuccessCelebration';
 
 // Mock data for reference images
 const mockReferenceImages = [
@@ -590,6 +591,7 @@ const Generate = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [theme, setTheme] = useState('light'); // 'light' or 'dark'
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+  const [showSuccessCelebration, setShowSuccessCelebration] = useState(false);
   
   // Auth and Credit stores
   const { user } = useAuthStore();
@@ -642,6 +644,11 @@ const Generate = () => {
       ].slice(0, settings.variants);
       
       setGeneratedImages(mockGenerated);
+      
+      // Show success celebration
+      setTimeout(() => {
+        setShowSuccessCelebration(true);
+      }, 500);
     } catch (error) {
       console.error('Generation failed:', error);
       // Credits would be refunded automatically by the backend in a real scenario
@@ -827,6 +834,13 @@ const Generate = () => {
         currentCredits={credits || 0}
         requiredCredits={settings.variants}
         variantCount={settings.variants}
+      />
+      
+      <SuccessCelebration
+        isVisible={showSuccessCelebration}
+        onComplete={() => setShowSuccessCelebration(false)}
+        resultCount={settings.variants}
+        quality={settings.variants > 2 ? "incredible" : "amazing"}
       />
     </div>
   );

@@ -67,6 +67,28 @@ const useCreditStore = create((set, get) => ({
     return credits !== null && credits >= requiredCredits
   },
 
+  // Check if user qualifies for free trial (first generation)
+  checkFreeTrial: async (userId) => {
+    if (!userId) return false
+
+    try {
+      const { data, error } = await supabase
+        .from('credit_transactions')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('transaction_type', 'generation_usage')
+        .limit(1)
+
+      if (error) throw error
+      
+      // If no generation transactions exist, user qualifies for free trial
+      return data.length === 0
+    } catch (error) {
+      console.error('Error checking free trial:', error)
+      return false
+    }
+  },
+
   // Consume credits for generation (atomic operation)
   consumeCredits: async (userId, variantCount, generationId) => {
     if (!userId) {

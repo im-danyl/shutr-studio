@@ -657,8 +657,8 @@ const Generate = () => {
                       filters={styleFilters}
                       onFiltersChange={setStyleFilters}
                       showSearch={true}
-                      showAdvanced={false}
-                      compact={true}
+                      showAdvanced={true}
+                      compact={false}
                     />
                   </div>
                   

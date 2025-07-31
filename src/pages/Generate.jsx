@@ -4,58 +4,10 @@ import useCreditStore from '../store/creditStore';
 import CreditCostPreview from '../components/credits/CreditCostPreview';
 import InsufficientCreditsModal from '../components/credits/InsufficientCreditsModal';
 import SuccessCelebration from '../components/ui/SuccessCelebration';
+import { mockStyleReferences, filterStyles } from '../data/mockStyles';
+import FilterBar from '../components/styles/FilterBar';
+import StyleGrid from '../components/styles/StyleGrid';
 
-// Mock data for reference images
-const mockReferenceImages = [
-  {
-    id: '1',
-    url: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&h=400&fit=crop',
-    title: 'Modern Minimalist',
-    category: 'Lifestyle',
-    aspectRatio: '1:1',
-    mood: 'Minimalist',
-  },
-  {
-    id: '2',
-    url: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop',
-    title: 'Studio Product Shot',
-    category: 'Product',
-    aspectRatio: '1:1',
-    mood: 'Studio',
-  },
-  {
-    id: '3',
-    url: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=600&fit=crop',
-    title: 'Natural Light Beauty',
-    category: 'Beauty',
-    aspectRatio: '3:4',
-    mood: 'Natural',
-  },
-  {
-    id: '4',
-    url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop',
-    title: 'Fashion Forward',
-    category: 'Fashion',
-    aspectRatio: '1:1',
-    mood: 'Dramatic',
-  },
-  {
-    id: '5',
-    url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=400&fit=crop',
-    title: 'Food Styling',
-    category: 'Food',
-    aspectRatio: '1:1',
-    mood: 'Natural',
-  },
-  {
-    id: '6',
-    url: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
-    title: 'Artistic Product',
-    category: 'Product',
-    aspectRatio: '1:1',
-    mood: 'Artistic',
-  },
-];
 
 // Utility function for className merging
 function cn(...classes) {
@@ -402,48 +354,6 @@ const UploadDropzone = ({ onFileUploaded, accept = 'image/*', className, maxSize
 };
 
 
-// Reference Grid Component
-const ReferenceGrid = ({ filters, onSelect, selectedId }) => {
-  const filteredImages = mockReferenceImages.filter((image) => {
-    const matchesCategory = filters.category === 'All' || image.category === filters.category;
-    const matchesAspectRatio = filters.aspectRatio === 'All' || image.aspectRatio === filters.aspectRatio;
-    const matchesMood = filters.mood === 'All' || image.mood === filters.mood;
-    
-    return matchesCategory && matchesAspectRatio && matchesMood;
-  });
-
-  return (
-    <div className="reference-grid-container">
-      {filteredImages.map((image) => (
-        <Card 
-            key={image.id} 
-            className="reference-card"
-            style={{ 
-                boxShadow: selectedId === image.id ? `0 0 0 2px var(--accent-solid)` : 'none',
-                transform: selectedId === image.id ? 'scale(0.97)' : 'scale(1)',
-            }} 
-            onClick={() => onSelect(image)}
-        >
-          <img src={image.url} alt={image.title} className="reference-image" />
-          <div className="card-info-overlay">
-            <h3 className="h3-card">{image.title}</h3>
-            <p className="caption" style={{ color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
-              {image.category} • {image.mood}
-            </p>
-          </div>
-        </Card>
-      ))}
-      
-      {filteredImages.length === 0 && (
-        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px 0' }}>
-          <p className="body" style={{ color: 'var(--text-muted)'}}>
-            No styles match your current filters.
-          </p>
-        </div>
-      )}
-    </div>
-  );
-};
 
 // Settings Accordion Component
 const SettingsAccordion = ({ settings, onSettingsChange }) => {
@@ -597,14 +507,8 @@ const Generate = () => {
   const { user } = useAuthStore();
   const { credits, fetchCredits, consumeCredits, checkCreditsAvailable } = useCreditStore();
 
-  // Filter states for reference gallery
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedAspectRatio, setSelectedAspectRatio] = useState('All');
-  const [selectedMood, setSelectedMood] = useState('All');
-
-  const categories = ['All', 'Lifestyle', 'Product', 'Food', 'Fashion', 'Beauty'];
-  const aspectRatios = ['All', '1:1', '3:4', '4:3', '9:16', '16:9'];
-  const moods = ['All', 'Minimalist', 'Dramatic', 'Natural', 'Studio', 'Artistic'];
+  // Filter states for style library
+  const [styleFilters, setStyleFilters] = useState({});
 
   // Fetch credits when user changes
   useEffect(() => {
@@ -667,9 +571,7 @@ const Generate = () => {
   };
 
   const clearFilters = () => {
-    setSelectedCategory('All');
-    setSelectedAspectRatio('All');
-    setSelectedMood('All');
+    setStyleFilters({});
   };
   
   const clearSelection = () => {
@@ -677,7 +579,19 @@ const Generate = () => {
     setCustomReference(null);
   };
 
-  const hasActiveFilters = selectedCategory !== 'All' || selectedAspectRatio !== 'All' || selectedMood !== 'All';
+  const hasActiveFilters = Object.values(styleFilters).some(value => value && value !== 'All');
+  
+  // Filter styles based on current filters
+  const filteredStyles = filterStyles(mockStyleReferences, styleFilters);
+  
+  const handleStyleSelect = (style) => {
+    setSelectedReference(selectedReference?.id === style.id ? null : style);
+    setCustomReference(null);
+  };
+  
+  const handleStylePreview = (style) => {
+    console.log('Preview style:', style);
+  };
 
   const steps = [
     { number: 1, title: 'Reference Style', description: 'Choose or upload a style' },
@@ -690,10 +604,6 @@ const Generate = () => {
     setSelectedReference(null);
   };
 
-  const handleLibrarySelect = (image) => {
-    setSelectedReference(image);
-    setCustomReference(null);
-  };
 
   const handleProductUpload = (file) => {
     setProductImage(URL.createObjectURL(file));
@@ -741,18 +651,27 @@ const Generate = () => {
                 </div>
 
                 <Card style={{ padding: '24px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '16px' }}>
-                      <h3 className="h3-card" style={{ margin: 0 }}>Style Library</h3>
-                      {hasActiveFilters && <Button variant="outline" size="sm" onClick={clearFilters}>Clear Filters</Button>}
+                  <div style={{ marginBottom: '24px' }}>
+                    <h3 className="h3-card" style={{ margin: 0, marginBottom: '16px' }}>Style Library</h3>
+                    <FilterBar
+                      filters={styleFilters}
+                      onFiltersChange={setStyleFilters}
+                      showSearch={true}
+                      showAdvanced={false}
+                      compact={true}
+                    />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '16px' }}>
-                      <Select value={selectedCategory} onValueChange={setSelectedCategory}><SelectTrigger><SelectValue placeholder="Category" value={selectedCategory} /></SelectTrigger><SelectContent>{categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
-                      <Select value={selectedAspectRatio} onValueChange={setSelectedAspectRatio}><SelectTrigger><SelectValue placeholder="Aspect Ratio" value={selectedAspectRatio} /></SelectTrigger><SelectContent>{aspectRatios.map(ar => <SelectItem key={ar} value={ar}>{ar}</SelectItem>)}</SelectContent></Select>
-                      <Select value={selectedMood} onValueChange={setSelectedMood}><SelectTrigger><SelectValue placeholder="Mood" value={selectedMood} /></SelectTrigger><SelectContent>{moods.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}</SelectContent></Select>
-                  </div>
+                  
+                  <StyleGrid
+                    styles={filteredStyles}
+                    selectedStyleId={selectedReference?.id}
+                    onStyleSelect={handleStyleSelect}
+                    onStylePreview={handleStylePreview}
+                    size="medium"
+                    showDetails={false}
+                    emptyMessage="No styles match your current filters. Try adjusting your search criteria."
+                  />
                 </Card>
-
-                <ReferenceGrid filters={{ category: selectedCategory, aspectRatio: selectedAspectRatio, mood: selectedMood }} onSelect={handleLibrarySelect} selectedId={selectedReference?.id} />
               </div>
             )}
 

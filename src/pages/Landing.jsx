@@ -23,38 +23,15 @@ const Landing = () => {
             .cta-buttons { flex-direction: row !important; }
           }
         `}</style>
-        <div className="cta-buttons" style={{ display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
+        <div className="cta-buttons" style={{ display: 'flex', flexDirection: 'column', gap: '16px', justifyContent: 'center', marginBottom: '32px' }}>
           <Link 
             to="/signup"
             className="button variant-default size-lg"
-            style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
           >
             <Sparkles style={{ marginRight: '8px', width: '20px', height: '20px' }} />
-            Start Creating For Free
-            <div style={{
-              position: 'absolute',
-              top: '-2px',
-              right: '-2px',
-              backgroundColor: '#ef4444',
-              color: 'white',
-              fontSize: '10px',
-              fontWeight: '600',
-              padding: '2px 6px',
-              borderRadius: '8px',
-              transform: 'rotate(12deg)'
-            }}>
-              FREE
-            </div>
+            Get Started Free
           </Link>
-          <div style={{ fontSize: '14px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '8px' }}>
-            🎁 <strong style={{ color: 'var(--accent-solid)' }}>First generation completely free</strong> - No credit card required
-          </div>
           <Link 
             to="/styles"
             className="button variant-outline size-lg"
@@ -111,109 +88,6 @@ const Landing = () => {
           </div>
         </div>
 
-        {/* Before/After Examples */}
-        <div style={{ marginTop: '64px' }}>
-          <h2 style={{ textAlign: 'center', marginBottom: '32px', fontSize: '32px' }}>
-            See the <span style={{ background: 'var(--accent-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>AI Magic</span> in Action
-          </h2>
-          
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px', marginBottom: '32px' }}>
-            {/* Example 1 */}
-            <div className="card p-6">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>BEFORE</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product before styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', filter: 'grayscale(20%) brightness(0.9)' }}
-                  />
-                </div>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>AFTER AI</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product after AI styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 194, 255, 0.3)' }}
-                  />
-                </div>
-              </div>
-              <p style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: '500', textAlign: 'center' }}>
-                Watch → Modern Minimalist Style
-              </p>
-            </div>
-            
-            {/* Example 2 */}
-            <div className="card p-6">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>BEFORE</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product before styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', filter: 'grayscale(20%) brightness(0.9)' }}
-                  />
-                </div>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>AFTER AI</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product after AI styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 194, 255, 0.3)' }}
-                  />
-                </div>
-              </div>
-              <p style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: '500', textAlign: 'center' }}>
-                Sneakers → Natural Light Beauty
-              </p>
-            </div>
-            
-            {/* Example 3 */}
-            <div className="card p-6">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>BEFORE</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product before styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', filter: 'grayscale(20%) brightness(0.9)' }}
-                  />
-                </div>
-                <div>
-                  <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px', textAlign: 'center' }}>AFTER AI</p>
-                  <img 
-                    src="https://images.unsplash.com/photo-1549298916-b41d501d3772?w=150&h=150&fit=crop&crop=center" 
-                    alt="Product after AI styling" 
-                    style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 194, 255, 0.3)' }}
-                  />
-                </div>
-              </div>
-              <p style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: '500', textAlign: 'center' }}>
-                Food → Artistic Product Style
-              </p>
-            </div>
-          </div>
-          
-          {/* Stats & Social Proof */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', marginTop: '48px', padding: '32px', backgroundColor: 'rgba(0, 194, 255, 0.05)', borderRadius: '16px', border: '1px solid rgba(0, 194, 255, 0.1)' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--accent-solid)', marginBottom: '4px' }}>1,247+</div>
-              <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Images Generated</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--accent-solid)', marginBottom: '4px' }}>98%</div>
-              <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Satisfaction Rate</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--accent-solid)', marginBottom: '4px' }}>30s</div>
-              <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Average Generation</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--accent-solid)', marginBottom: '4px' }}>350+</div>
-              <div style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Happy Creators</div>
-            </div>
-          </div>
-        </div>
 
         {/* Trust Indicators */}
         <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid var(--border)' }}>

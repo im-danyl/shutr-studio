@@ -12,11 +12,7 @@ const StyleCard = ({
   const [isHovered, setIsHovered] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  const sizeClasses = {
-    small: 'aspect-square',
-    medium: 'aspect-square',
-    large: style.aspectRatio === '3:4' ? 'aspect-[3/4]' : style.aspectRatio === '4/3' ? 'aspect-[4/3]' : 'aspect-square'
-  }
+  // Remove forced aspect ratios to allow natural image proportions
 
   return (
     <div 
@@ -30,19 +26,19 @@ const StyleCard = ({
       onClick={() => onSelect?.(style)}
     >
       {/* Image */}
-      <div className={`relative ${sizeClasses[size]} overflow-hidden`}>
+      <div className="relative overflow-hidden">
         <img
           src={style.url}
           alt={style.title}
           onLoad={() => setImageLoaded(true)}
-          className={`w-full h-full object-cover transition-all duration-300 ${
+          className={`w-full h-auto object-contain transition-all duration-300 ${
             imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
           } ${isHovered ? 'scale-110' : 'scale-100'}`}
         />
         
         {/* Loading placeholder */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse" />
+          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse min-h-[200px]" />
         )}
         
         {/* Overlay */}
@@ -146,7 +142,7 @@ const StyleGrid = ({
         'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
       } ${className}`}>
         {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="aspect-square bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+          <div key={i} className="bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" style={{ minHeight: '200px' }} />
         ))}
       </div>
     )
@@ -173,7 +169,7 @@ const StyleGrid = ({
       size === 'small' ? 'grid-cols-4 md:grid-cols-6 lg:grid-cols-8' :
       size === 'medium' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' :
       'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-    } ${className}`}>
+    } ${className}`} style={{ gridAutoRows: 'min-content' }}>
       {styles.map((style) => (
         <StyleCard
           key={style.id}

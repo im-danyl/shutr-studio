@@ -650,28 +650,26 @@ const Generate = () => {
                   </Card>
                 </div>
 
-                <Card style={{ padding: '24px' }}>
-                  <div style={{ marginBottom: '24px' }}>
-                    <h3 className="h3-card" style={{ margin: 0, marginBottom: '16px' }}>Style Library</h3>
-                    <FilterBar
-                      filters={styleFilters}
-                      onFiltersChange={setStyleFilters}
-                      showSearch={true}
-                      showAdvanced={true}
-                      compact={false}
-                    />
-                  </div>
-                  
-                  <StyleGrid
-                    styles={filteredStyles}
-                    selectedStyleId={selectedReference?.id}
-                    onStyleSelect={handleStyleSelect}
-                    onStylePreview={handleStylePreview}
-                    size="medium"
-                    showDetails={false}
-                    emptyMessage="No styles match your current filters. Try adjusting your search criteria."
+                <div style={{ marginBottom: '32px' }}>
+                  <h3 className="h3-card" style={{ margin: 0, marginBottom: '16px' }}>Style Library</h3>
+                  <FilterBar
+                    filters={styleFilters}
+                    onFiltersChange={setStyleFilters}
+                    showSearch={true}
+                    showAdvanced={true}
+                    compact={false}
                   />
-                </Card>
+                </div>
+                
+                <StyleGrid
+                  styles={filteredStyles}
+                  selectedStyleId={selectedReference?.id}
+                  onStyleSelect={handleStyleSelect}
+                  onStylePreview={handleStylePreview}
+                  size="medium"
+                  showDetails={false}
+                  emptyMessage="No styles match your current filters. Try adjusting your search criteria."
+                />
               </div>
             )}
 

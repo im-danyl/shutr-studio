@@ -48,7 +48,7 @@ const useAuthStore = create((set, get) => ({
   // Ensure user profile exists in database
   ensureUserProfile: async (user) => {
     try {
-      // Check if profile exists
+      // Check if profile exists (database trigger should have created it automatically)
       const { data: existingProfile, error: fetchError } = await supabase
         .from('user_profiles')
         .select('*')
@@ -56,29 +56,14 @@ const useAuthStore = create((set, get) => ({
         .single()
 
       if (fetchError && fetchError.code !== 'PGRST116') {
-        throw fetchError
+        console.error('Error fetching user profile:', fetchError)
+        // Profile should be created by database trigger, no manual creation needed
+        return
       }
 
-      // Create profile if it doesn't exist
       if (!existingProfile) {
-        const { error: insertError } = await supabase
-          .from('user_profiles')
-          .insert([
-            {
-              id: user.id,
-              email: user.email,
-              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-              avatar_url: user.user_metadata?.avatar_url || null,
-              credits: 2, // Give new users 2 free credits
-              created_at: new Date().toISOString()
-            }
-          ])
-
-        if (insertError) {
-          console.error('Error creating user profile:', insertError)
-        } else {
-          console.log('User profile created successfully')
-        }
+        console.warn('User profile not found - database trigger may have failed')
+        // Let database trigger handle profile creation instead of manual insertion
       }
     } catch (error) {
       console.error('Error ensuring user profile:', error)

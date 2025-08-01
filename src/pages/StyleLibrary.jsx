@@ -49,7 +49,7 @@ const StyleLibrary = () => {
         {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
-            <div className="animate-spin h-8 w-8 border-2 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <div className="animate-spin h-8 w-8 border-2 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"></div>
             <p style={{ color: 'var(--text-muted)' }}>Loading style library...</p>
           </div>
         )}

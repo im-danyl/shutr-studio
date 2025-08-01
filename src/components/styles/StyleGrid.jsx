@@ -40,17 +40,17 @@ const StyleCard = ({
           <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse min-h-[200px] rounded-lg" />
         )}
         
-        {/* Minimal selection indicator */}
+        {/* Selection indicator - top left when selected */}
         {isSelected && (
-          <div className="absolute top-2 right-2 w-5 h-5 bg-orange-500 rounded-full flex items-center justify-center">
-            <Check size={12} className="text-white" />
+          <div className="absolute top-2 left-2 w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+            <Check size={14} className="text-white" />
           </div>
         )}
         
         {/* Simple hover overlay with clean design */}
         {isHovered && showDetails && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 flex flex-col justify-between p-3 transition-all duration-300">
-            {/* Top section - Select button only */}
+            {/* Top section - Select button (top right) */}
             <div className="flex justify-end">
               <button
                 onClick={(e) => {
@@ -59,8 +59,8 @@ const StyleCard = ({
                 }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isSelected 
-                    ? 'bg-orange-500 text-white' 
-                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30'
+                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-lg' 
+                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30'
                 }`}
               >
                 {isSelected ? '✓ Selected' : 'Select'}

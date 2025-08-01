@@ -25,7 +25,7 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-11 px-4 pr-10 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-400 cursor-pointer shadow-sm text-left flex items-center justify-between"
+        className="w-full h-11 px-4 pr-10 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-300 ease-out hover:border-gray-400 dark:hover:border-gray-400 cursor-pointer shadow-sm text-left flex items-center justify-between transform hover:scale-[1.01] active:scale-[0.99]"
       >
         <span className={selectedValue ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}>
           {displayValue}
@@ -46,11 +46,11 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+          <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent animate-in fade-in-0 zoom-in-95 duration-200 ease-out">
             <div className="py-1">
               <div
                 onClick={() => handleSelect('')}
-                className={`px-3 py-2 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                className={`px-3 py-2 text-sm cursor-pointer transition-all duration-200 ease-out hover:bg-gray-50 dark:hover:bg-gray-700 transform hover:translate-x-1 ${
                   !selectedValue ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
                 }`}
               >
@@ -61,7 +61,7 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
                 <div
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className={`px-3 py-2 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                  className={`px-3 py-2 text-sm cursor-pointer transition-all duration-200 ease-out hover:bg-gray-50 dark:hover:bg-gray-700 transform hover:translate-x-1 ${
                     selectedValue === option ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >

@@ -69,8 +69,8 @@ const DropZone = ({
       >
         <input {...getInputProps()} />
         
-        <div className="flex flex-col items-center gap-4">
-          <div className={`p-3 rounded-full ${
+        <div className="flex flex-col items-center gap-6 text-center">
+          <div className={`p-4 rounded-full transition-all duration-300 ease-out transform hover:scale-105 ${
             isDragActive 
               ? isDragAccept 
                 ? 'bg-green-100 dark:bg-green-900/30' 
@@ -79,32 +79,32 @@ const DropZone = ({
           }`}>
             {isDragActive ? (
               isDragAccept ? (
-                <Upload size={24} className="text-green-600 dark:text-green-400" />
+                <Upload size={32} className="text-green-600 dark:text-green-400" />
               ) : (
-                <AlertCircle size={24} className="text-red-600 dark:text-red-400" />
+                <AlertCircle size={32} className="text-red-600 dark:text-red-400" />
               )
             ) : (
-              <Image size={24} className="text-gray-600 dark:text-gray-400" />
+              <Image size={32} className="text-gray-600 dark:text-gray-400" />
             )}
           </div>
           
-          <div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          <div className="space-y-3">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
               {isDragActive 
                 ? isDragAccept 
                   ? 'Drop your image here' 
                   : 'Invalid file type'
-                : 'Upload your product image'
+                : 'Upload your image'
               }
             </h3>
             
             {!isDragActive && (
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <p className="text-gray-600 dark:text-gray-400">
-                  Drag & drop an image here, or <span className="text-orange-500 font-medium">click to browse</span>
+                  Drag & drop, or <span className="text-blue-600 dark:text-blue-400 font-medium">click to browse</span>
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
-                  PNG, JPG, JPEG, WebP up to 10MB
+                  Max file size: 10MB
                 </p>
               </div>
             )}

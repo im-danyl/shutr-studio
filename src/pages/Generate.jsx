@@ -676,13 +676,13 @@ const Generate = () => {
 
                 {/* Floating Continue Button */}
                 {(selectedReference || customReference) && (
-                  <div className="fixed bottom-6 right-6 z-50">
+                  <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-8 slide-in-from-right-8 duration-500 ease-out">
                     <button
                       onClick={() => setCurrentStep(2)}
-                      className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 border border-gray-800 dark:border-gray-200"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-semibold shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-blue-500/25 flex items-center gap-3 backdrop-blur-sm ring-1 ring-white/20"
                     >
                       <span>Continue with Style</span>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                       </svg>
                     </button>

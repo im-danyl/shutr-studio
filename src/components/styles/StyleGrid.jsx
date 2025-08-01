@@ -25,10 +25,10 @@ const StyleCard = ({
 
   return (
     <div 
-      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-4 break-inside-avoid ${
+      className={`group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer mb-4 break-inside-avoid transform ${
         isSelected 
-          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20' 
-          : 'hover:opacity-90'
+          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20 scale-[1.02]' 
+          : 'hover:opacity-90 hover:scale-[1.01]'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -52,8 +52,8 @@ const StyleCard = ({
         
         {/* Selection indicator - top left when selected */}
         {isSelected && (
-          <div className="absolute top-3 left-3 w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
-            <Check size={14} className="text-white" />
+          <div className="absolute top-3 left-3 w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg animate-in zoom-in-75 duration-300 ease-out">
+            <Check size={14} className="text-white animate-in zoom-in-50 duration-200 delay-100" />
           </div>
         )}
         
@@ -142,7 +142,7 @@ const StyleGrid = ({
   }
 
   return (
-    <div className={`columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 ${className}`} style={{ columnFill: 'balance' }}>
+    <div className={`columns-3 gap-4 ${className}`} style={{ columnFill: 'balance' }}>
       {styles.map((style) => (
         <StyleCard
           key={style.id}

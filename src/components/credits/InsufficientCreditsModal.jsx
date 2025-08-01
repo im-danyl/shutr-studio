@@ -13,15 +13,15 @@ const InsufficientCreditsModal = ({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in-0 duration-300">
       {/* Background overlay */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm animate-in fade-in-0 duration-300"
         onClick={onClose}
       />
       
       {/* Modal content */}
-      <div className="relative w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden">
+      <div className="relative w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-300 ease-out">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ const InsufficientCreditsModal = ({
                 // This would be handled by parent component
                 onClose()
               }}
-              className="w-full p-3 text-left bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-950/30 transition-colors group"
+              className="w-full p-3 text-left bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-950/30 transition-all duration-200 hover:scale-[1.02] hover:shadow-md group"
             >
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50">
@@ -99,7 +99,7 @@ const InsufficientCreditsModal = ({
             </button>
 
             {/* Get more credits option */}
-            <button className="w-full p-3 text-left bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-950/30 transition-colors group">
+            <button className="w-full p-3 text-left bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg hover:bg-green-100 dark:hover:bg-green-950/30 transition-all duration-200 hover:scale-[1.02] hover:shadow-md group">
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-full group-hover:bg-green-200 dark:group-hover:bg-green-900/50">
                   <CreditCard size={14} className="text-green-600 dark:text-green-400" />
@@ -116,7 +116,7 @@ const InsufficientCreditsModal = ({
             </button>
 
             {/* Invite friends option */}
-            <button className="w-full p-3 text-left bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-950/30 transition-colors group">
+            <button className="w-full p-3 text-left bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-800 rounded-lg hover:bg-purple-100 dark:hover:bg-purple-950/30 transition-all duration-200 hover:scale-[1.02] hover:shadow-md group">
               <div className="flex items-center gap-3">
                 <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded-full group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50">
                   <Gift size={14} className="text-purple-600 dark:text-purple-400" />

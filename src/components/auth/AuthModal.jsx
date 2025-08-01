@@ -157,15 +157,15 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in-0 duration-300">
       {/* Background overlay */}
       <div 
-        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm animate-in fade-in-0 duration-300"
         onClick={onClose}
       />
       
       {/* Main container */}
-      <div className="relative w-full max-w-5xl h-full max-h-[85vh] flex bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden">
+      <div className="relative w-full max-w-5xl h-full max-h-[85vh] flex bg-white dark:bg-gray-900 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-8 duration-400 ease-out">
         {/* Left side - Hero section */}
         <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
           {/* Gradient background */}
@@ -247,7 +247,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
               <button
                 onClick={handleGoogleAuth}
                 disabled={loading || emailCheckLoading}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 mb-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 focus:ring-1 focus:ring-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 mb-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 focus:ring-1 focus:ring-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:scale-[1.02] active:scale-[0.98] hover:shadow-md"
               >
                 {loading || emailCheckLoading ? (
                   <div className="animate-spin h-5 w-5 border-2 border-gray-400 border-t-transparent rounded-full" />

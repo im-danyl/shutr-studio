@@ -27,7 +27,7 @@ const StyleCard = ({
     <div 
       className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-6 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-gray-400 dark:ring-gray-500 rounded-xl shadow-lg shadow-gray-400/20 dark:shadow-gray-500/20' 
+          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20' 
           : 'hover:opacity-90'
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -52,8 +52,8 @@ const StyleCard = ({
         
         {/* Selection indicator - top left when selected */}
         {isSelected && (
-          <div className="absolute top-3 left-3 w-6 h-6 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center shadow-lg">
-            <Check size={14} className="text-white dark:text-gray-900" />
+          <div className="absolute top-3 left-3 w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+            <Check size={14} className="text-white" />
           </div>
         )}
         
@@ -69,7 +69,7 @@ const StyleCard = ({
                 }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isSelected 
-                    ? 'bg-gray-900 text-white shadow-lg dark:bg-white dark:text-gray-900' 
+                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-lg' 
                     : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30'
                 }`}
               >

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import ProtectedRoute from './components/auth/ProtectedRoute'
@@ -9,8 +9,15 @@ import Dashboard from './pages/Dashboard'
 import StyleLibrary from './pages/StyleLibrary'
 import Generate from './pages/Generate'
 import Results from './pages/Results'
+import AdminStyles from './pages/AdminStyles'
+import useAuthStore from './store/authStore'
 
 function App() {
+  const initialize = useAuthStore(state => state.initialize)
+
+  useEffect(() => {
+    initialize()
+  }, [])
   return (
     <Router>
       <Routes>
@@ -52,6 +59,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Results />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/styles" 
+                element={
+                  <ProtectedRoute>
+                    <AdminStyles />
                   </ProtectedRoute>
                 } 
               />

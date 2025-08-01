@@ -210,5 +210,93 @@ export const storage = {
     return await supabase.storage
       .from(bucket)
       .remove([path])
+  },
+
+  // Upload product image for user
+  uploadProductImage: async (userId, file, originalName) => {
+    // Generate unique filename using database function
+    const { data: uniqueName } = await supabase.rpc('generate_unique_filename', {
+      p_user_id: userId,
+      p_original_name: originalName,
+      p_prefix: 'product_'
+    })
+
+    if (!uniqueName) {
+      throw new Error('Failed to generate unique filename')
+    }
+
+    const { data, error } = await supabase.storage
+      .from('product-images')
+      .upload(uniqueName, file, {
+        cacheControl: '3600',
+        upsert: false
+      })
+
+    if (error) throw error
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('product-images')
+      .getPublicUrl(uniqueName)
+
+    return { path: uniqueName, url: publicUrl }
+  },
+
+  // Upload generated images (service role only)
+  uploadGeneratedImage: async (userId, imageBlob, generationId, index) => {
+    const filename = `${userId}/generation_${generationId}_${index}.png`
+    
+    const { data, error } = await supabase.storage
+      .from('generated-images')
+      .upload(filename, imageBlob, {
+        cacheControl: '86400',
+        upsert: true
+      })
+
+    if (error) throw error
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('generated-images')
+      .getPublicUrl(filename)
+
+    return { path: filename, url: publicUrl }
+  },
+
+  // Upload style reference (admin only)
+  uploadStyleReference: async (file, styleName) => {
+    const fileExt = file.name.split('.').pop()
+    const filename = `${styleName.toLowerCase().replace(/\s+/g, '_')}.${fileExt}`
+    
+    const { data, error } = await supabase.storage
+      .from('style-references')
+      .upload(filename, file, {
+        cacheControl: '31536000', // 1 year
+        upsert: true
+      })
+
+    if (error) throw error
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('style-references')
+      .getPublicUrl(filename)
+
+    return { path: filename, url: publicUrl }
+  },
+
+  // Delete user's product image
+  deleteProductImage: async (userId, filename) => {
+    return await supabase.storage
+      .from('product-images')
+      .remove([`${userId}/${filename}`])
+  },
+
+  // Get user's uploaded images
+  getUserImages: async (userId, limit = 10) => {
+    return await supabase.storage
+      .from('product-images')
+      .list(userId, {
+        limit,
+        sortBy: { column: 'created_at', order: 'desc' }
+      })
   }
 }

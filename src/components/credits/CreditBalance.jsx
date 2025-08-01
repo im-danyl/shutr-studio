@@ -1,30 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Coins, RefreshCw } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
+import useCreditStore from '../../store/creditStore'
 
 const CreditBalance = ({ className = "" }) => {
-  const [credits, setCredits] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const { user, getUserProfile } = useAuthStore()
-
-  const fetchCredits = async () => {
-    if (!user) return
-    
-    try {
-      setLoading(true)
-      const profile = await getUserProfile()
-      setCredits(profile?.credits || 0)
-    } catch (error) {
-      console.error('Error fetching credits:', error)
-      setCredits(0)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { user } = useAuthStore()
+  const { credits, loading, fetchCredits } = useCreditStore()
 
   useEffect(() => {
-    fetchCredits()
-  }, [user])
+    if (user) {
+      fetchCredits(user.id)
+    }
+  }, [user, fetchCredits])
+
+  const handleRefresh = () => {
+    if (user) {
+      fetchCredits(user.id)
+    }
+  }
 
   if (!user) return null
 
@@ -56,7 +49,7 @@ const CreditBalance = ({ className = "" }) => {
         </div>
         
         <button
-          onClick={fetchCredits}
+          onClick={handleRefresh}
           disabled={loading}
           className="p-1 hover:bg-white/50 dark:hover:bg-gray-800/50 rounded transition-colors disabled:opacity-50"
           title="Refresh credit balance"

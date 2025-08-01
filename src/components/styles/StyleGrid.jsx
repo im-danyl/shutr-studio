@@ -47,78 +47,40 @@ const StyleCard = ({
           </div>
         )}
         
-        {/* Beautiful hover overlay with all details inside image */}
+        {/* Simple hover overlay with clean design */}
         {isHovered && showDetails && (
-          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent flex flex-col justify-between p-4 transition-all duration-300 backdrop-blur-sm">
-            {/* Top section - Category and mood badges */}
-            <div className="flex justify-between items-start">
-              <div className="flex gap-2">
-                <span className="bg-white/25 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-medium border border-white/20">
-                  {style.category}
-                </span>
-              </div>
-              {style.mood && (
-                <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs px-3 py-1.5 rounded-full font-medium shadow-lg">
-                  {style.mood}
-                </span>
-              )}
-            </div>
-            
-            {/* Center section - Select button */}
-            <div className="flex justify-center items-center">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 flex flex-col justify-between p-3 transition-all duration-300">
+            {/* Top section - Select button only */}
+            <div className="flex justify-end">
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   onSelect?.(style)
                 }}
-                className={`px-8 py-3 rounded-full font-semibold transition-all duration-200 transform hover:scale-105 shadow-xl ${
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isSelected 
-                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border-2 border-orange-300 shadow-orange-500/50' 
-                    : 'bg-white/20 backdrop-blur-md text-white border-2 border-white/30 hover:bg-white/30 hover:border-white/50'
+                    ? 'bg-orange-500 text-white' 
+                    : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30'
                 }`}
               >
-                {isSelected ? (
-                  <div className="flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <span>Selected</span>
-                  </div>
-                ) : 'Select Style'}
+                {isSelected ? '✓ Selected' : 'Select'}
               </button>
             </div>
             
-            {/* Bottom section - Main details */}
-            <div className="space-y-3">
+            {/* Bottom section - Essential details only */}
+            <div className="space-y-2">
               {/* Title */}
-              <h3 className="text-white font-bold text-xl leading-tight drop-shadow-lg">
+              <h3 className="text-white font-semibold text-lg leading-tight">
                 {style.title}
               </h3>
               
-              {/* Tags */}
-              {style.tags && style.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {style.tags.slice(0, 3).map(tag => (
-                    <span 
-                      key={tag}
-                      className="bg-white/20 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-full border border-white/20"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-              
-              {/* Container and Background info */}
-              <div className="grid grid-cols-2 gap-3 text-xs text-white/95">
-                <div className="bg-white/15 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20">
-                  <div className="font-semibold text-white/80 mb-1">Container</div>
-                  <div className="font-medium">{style.container}</div>
-                </div>
-                <div className="bg-white/15 backdrop-blur-md rounded-lg px-3 py-2 border border-white/20">
-                  <div className="font-semibold text-white/80 mb-1">Background</div>
-                  <div className="font-medium">{style.background}</div>
-                </div>
+              {/* Essential info in simple format */}
+              <div className="flex flex-wrap gap-2 text-sm text-white/90">
+                <span>1:1</span>
+                <span>•</span>
+                <span>{style.container}</span>
+                <span>•</span>
+                <span>{style.mood}</span>
               </div>
             </div>
           </div>

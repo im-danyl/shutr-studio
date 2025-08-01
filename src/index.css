@@ -232,6 +232,33 @@ a:hover {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* CUSTOM SCROLLBAR */
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(209 213 219) transparent;
+}
+
+.dark .scrollbar-thin {
+    scrollbar-color: rgb(75 85 99) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgb(209 213 219);
+    border-radius: 2px;
+}
+
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgb(75 85 99);
+}
+
 /* REFERENCE & GENERATED IMAGES */
 .reference-grid-container {
     column-count: 4;

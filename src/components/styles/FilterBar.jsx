@@ -46,35 +46,25 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
             className="fixed inset-0 z-10" 
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute z-20 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-xl max-h-64 overflow-y-auto">
-            <div className="py-2">
+          <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+            <div className="py-1">
               <div
                 onClick={() => handleSelect('')}
-                className={`px-4 py-3 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3 ${
+                className={`px-3 py-2 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 ${
                   !selectedValue ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
                 }`}
               >
-                <div className="flex items-center justify-center w-2 h-2">
-                  {!selectedValue && (
-                    <div className="w-2 h-2 bg-gray-700 dark:bg-gray-300 rounded-full" />
-                  )}
-                </div>
-                <span>{placeholder}</span>
+                {placeholder}
               </div>
               
               {options.filter(option => option !== 'All').map(option => (
                 <div
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className={`px-4 py-3 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3 ${
+                  className={`px-3 py-2 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 ${
                     selectedValue === option ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  <div className="flex items-center justify-center w-2 h-2">
-                    {selectedValue === option && (
-                      <div className="w-2 h-2 bg-gray-700 dark:bg-gray-300 rounded-full" />
-                    )}
-                  </div>
                   <span className="capitalize">{option}</span>
                 </div>
               ))}

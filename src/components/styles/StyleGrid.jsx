@@ -26,19 +26,19 @@ const StyleCard = ({
       onClick={() => onSelect?.(style)}
     >
       {/* Image */}
-      <div className="relative">
+      <div className="relative rounded-lg overflow-hidden">
         <img
           src={style.url}
           alt={style.title}
           onLoad={() => setImageLoaded(true)}
-          className={`w-full h-auto object-cover transition-opacity duration-300 ${
+          className={`w-full h-auto object-cover transition-all duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          } ${isHovered ? 'scale-105' : 'scale-100'}`}
         />
         
         {/* Loading placeholder */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse min-h-[200px]" />
+          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse min-h-[200px] rounded-lg" />
         )}
         
         {/* Minimal selection indicator */}
@@ -48,38 +48,57 @@ const StyleCard = ({
           </div>
         )}
         
-        {/* Minimal hover overlay - only show title on hover */}
+        {/* Beautiful hover overlay with all details inside image */}
         {isHovered && showDetails && (
-          <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent">
-            <h3 className="text-white font-medium text-xs">{style.title}</h3>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 flex flex-col justify-between p-4 transition-all duration-300">
+            {/* Top section - Category badge */}
+            <div className="flex justify-between items-start">
+              <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full font-medium">
+                {style.category}
+              </span>
+              {style.mood && (
+                <span className="bg-orange-500/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full font-medium">
+                  {style.mood}
+                </span>
+              )}
+            </div>
+            
+            {/* Bottom section - Main details */}
+            <div className="space-y-3">
+              {/* Title */}
+              <h3 className="text-white font-semibold text-lg leading-tight">
+                {style.title}
+              </h3>
+              
+              {/* Tags */}
+              {style.tags && style.tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {style.tags.slice(0, 4).map(tag => (
+                    <span 
+                      key={tag}
+                      className="bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+              
+              {/* Container and Background info */}
+              <div className="grid grid-cols-2 gap-2 text-xs text-white/90">
+                <div className="bg-white/10 backdrop-blur-sm rounded px-2 py-1">
+                  <div className="font-medium opacity-75">Container</div>
+                  <div>{style.container}</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded px-2 py-1">
+                  <div className="font-medium opacity-75">Background</div>
+                  <div>{style.background}</div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
-      
-      {/* Card details (for larger sizes) */}
-      {size === 'large' && showDetails && (
-        <div className="p-4">
-          <h3 className="font-medium text-gray-900 dark:text-white mb-2">{style.title}</h3>
-          <div className="flex flex-wrap gap-2 mb-3">
-            {style.tags.slice(0, 3).map(tag => (
-              <span 
-                key={tag}
-                className="text-xs text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 dark:text-gray-400">
-            <div>
-              <span className="font-medium">Container:</span> {style.container}
-            </div>
-            <div>
-              <span className="font-medium">Background:</span> {style.background}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
@@ -126,10 +145,10 @@ const StyleGrid = ({
   }
 
   return (
-    <div className={`grid gap-1 ${
+    <div className={`grid gap-4 ${
       size === 'small' ? 'grid-cols-4 md:grid-cols-6 lg:grid-cols-8' :
       size === 'medium' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' :
-      'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+      'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
     } ${className}`} style={{ gridAutoRows: 'min-content' }}>
       {styles.map((style) => (
         <StyleCard

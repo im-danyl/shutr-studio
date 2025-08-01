@@ -593,7 +593,7 @@ const Generate = () => {
   };
   
   const handleStylePreview = (style) => {
-    console.log('Preview style:', style);
+    // Add preview functionality later
   };
 
   const steps = [
@@ -743,8 +743,8 @@ const Generate = () => {
                     <Card style={{ padding: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                             <Button onClick={handleGenerate}><RefreshCwIcon style={{ marginRight: '8px' }} />Regenerate</Button>
-                            <Button variant="outline" onClick={() => console.log('Download All clicked')}><DownloadIcon style={{ marginRight: '8px' }} />Download All</Button>
-                            <Button variant="outline" onClick={() => console.log('Share clicked')}><ShareIcon style={{ marginRight: '8px' }} />Share Results</Button>
+                            <Button variant="outline" onClick={() => {/* TODO: Implement download all */}}><DownloadIcon style={{ marginRight: '8px' }} />Download All</Button>
+                            <Button variant="outline" onClick={() => {/* TODO: Implement share */}}><ShareIcon style={{ marginRight: '8px' }} />Share Results</Button>
                         </div>
                     </Card>
                 )}

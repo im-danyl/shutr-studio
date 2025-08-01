@@ -19,7 +19,6 @@ const StyleLibrary = () => {
 
   const handleStylePreview = (style) => {
     // Open preview modal or navigate to preview
-    console.log('Preview style:', style)
   }
 
   return (

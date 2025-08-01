@@ -65,7 +65,6 @@ const AdminStyles = () => {
   }
 
   const handleUploadComplete = (results) => {
-    console.log('Upload completed:', results)
     // Refresh the manage tab if it's active
     if (activeTab === 'manage') {
       fetchStyles()

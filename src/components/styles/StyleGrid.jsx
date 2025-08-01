@@ -1,6 +1,15 @@
 import React, { useState } from 'react'
 import { Check, Eye, Heart } from 'lucide-react'
 
+/**
+ * StyleCard component for displaying individual style references
+ * @param {Object} style - Style object with id, title, url, category, etc.
+ * @param {boolean} isSelected - Whether this style is currently selected
+ * @param {Function} onSelect - Callback when style is selected
+ * @param {Function} onPreview - Callback when style is previewed
+ * @param {boolean} showDetails - Whether to show style details overlay
+ * @param {string} size - Size variant: 'small', 'medium', 'large'
+ */
 const StyleCard = ({ 
   style, 
   isSelected = false, 
@@ -18,11 +27,12 @@ const StyleCard = ({
     <div 
       className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-orange-500 rounded-lg shadow-lg' 
+          ? 'ring-2 ring-cyan-400 rounded-lg shadow-lg shadow-cyan-400/20' 
           : 'hover:opacity-90'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => onSelect?.(style)}
     >
       {/* Image */}
       <div className="relative rounded-lg overflow-hidden">

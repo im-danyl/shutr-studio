@@ -1,10 +1,16 @@
 # Shutr Studio
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/YOUR_SITE_ID/deploy-status)](https://app.netlify.com/sites/shutr-studio/deploys)
+[![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.0.8-646CFF?logo=vite)](https://vitejs.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-Latest-3ECF8E?logo=supabase)](https://supabase.com/)
+[![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Image_1-412991?logo=openai)](https://openai.com/)
+
 AI-powered product photography styling platform using GPT Image 1 model.
 
 ## 🚀 Live Demo
 **Production:** https://shutr-studio.netlify.app  
-**Status:** ⚠️ Build error (Session 5 - to be fixed next session)
+**Status:** ✅ Live and working (as of Session 6)
 
 ## 📊 Current Progress
 - ✅ **Storage Infrastructure** - Complete 4-bucket system with RLS policies
@@ -12,7 +18,7 @@ AI-powered product photography styling platform using GPT Image 1 model.
 - ✅ **Authentication System** - Integrated but needs testing
 - ✅ **Credit System** - Integrated but needs testing
 - ✅ **Style Library** - 11 test images uploaded and working
-- ⚠️ **Deployment** - Build error needs resolution
+- ✅ **Deployment** - Live on Netlify with automatic builds
 
 ## 🛠️ Tech Stack
 - **Frontend:** React + Vite + Tailwind + shadcn/ui

@@ -18,6 +18,15 @@ const Select = ({ value, onValueChange, placeholder, options }) => (
   </select>
 )
 
+/**
+ * FilterBar component for filtering style references
+ * @param {Object} filters - Current filter state object
+ * @param {Function} onFiltersChange - Callback when filters change
+ * @param {boolean} showSearch - Whether to show search input
+ * @param {boolean} showAdvanced - Whether to show advanced filter options
+ * @param {boolean} compact - Whether to use compact layout
+ * @param {string} className - Additional CSS classes
+ */
 const FilterBar = ({ 
   filters = {}, 
   onFiltersChange, 

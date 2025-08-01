@@ -2,27 +2,89 @@ import React from 'react'
 import { Search, X, Filter } from 'lucide-react'
 import { filterOptions } from '../../data/mockStyles'
 
-// Enhanced Select component with better spacing and styling
-const Select = ({ value, onValueChange, placeholder, options }) => (
-  <select 
-    value={value || ''} 
-    onChange={(e) => onValueChange(e.target.value)}
-    className="w-full h-11 px-4 pr-10 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-1 focus:ring-gray-400 focus:border-gray-400 dark:focus:ring-gray-500 dark:focus:border-gray-500 outline-none transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 cursor-pointer appearance-none shadow-sm"
-    style={{
-      backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-      backgroundPosition: 'right 12px center',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: '16px'
-    }}
-  >
-    <option value="">{placeholder}</option>
-    {options.map(option => (
-      <option key={option} value={option === 'All' ? '' : option}>
-        {option}
-      </option>
-    ))}
-  </select>
-)
+// Custom Dropdown Component with modern styling
+const Select = ({ value, onValueChange, placeholder, options }) => {
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [selectedValue, setSelectedValue] = React.useState(value)
+  
+  React.useEffect(() => {
+    setSelectedValue(value)
+  }, [value])
+  
+  const handleSelect = (optionValue) => {
+    const newValue = optionValue === 'All' ? '' : optionValue
+    setSelectedValue(newValue)
+    onValueChange(newValue)
+    setIsOpen(false)
+  }
+  
+  const displayValue = selectedValue || placeholder
+  
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full h-11 px-4 pr-10 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-1 focus:ring-gray-400 focus:border-gray-400 dark:focus:ring-gray-500 dark:focus:border-gray-500 outline-none transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 cursor-pointer shadow-sm text-left flex items-center justify-between"
+      >
+        <span className={selectedValue ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}>
+          {displayValue}
+        </span>
+        <svg 
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {isOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-10" 
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute z-20 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+            <div className="py-2">
+              <div
+                onClick={() => handleSelect('')}
+                className={`px-4 py-3 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3 ${
+                  !selectedValue ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
+                }`}
+              >
+                <div className="flex items-center justify-center w-2 h-2">
+                  {!selectedValue && (
+                    <div className="w-2 h-2 bg-gray-700 dark:bg-gray-300 rounded-full" />
+                  )}
+                </div>
+                <span>{placeholder}</span>
+              </div>
+              
+              {options.filter(option => option !== 'All').map(option => (
+                <div
+                  key={option}
+                  onClick={() => handleSelect(option)}
+                  className={`px-4 py-3 text-sm cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3 ${
+                    selectedValue === option ? 'bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white font-medium' : 'text-gray-700 dark:text-gray-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-center w-2 h-2">
+                    {selectedValue === option && (
+                      <div className="w-2 h-2 bg-gray-700 dark:bg-gray-300 rounded-full" />
+                    )}
+                  </div>
+                  <span className="capitalize">{option}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
 
 /**
  * FilterBar component for filtering style references

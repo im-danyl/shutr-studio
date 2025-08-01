@@ -25,9 +25,9 @@ const StyleCard = ({
 
   return (
     <div 
-      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-4 break-inside-avoid ${
+      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-6 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-cyan-400 rounded-lg shadow-lg shadow-cyan-400/20' 
+          ? 'ring-2 ring-gray-400 dark:ring-gray-500 rounded-xl shadow-lg shadow-gray-400/20 dark:shadow-gray-500/20' 
           : 'hover:opacity-90'
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -35,7 +35,7 @@ const StyleCard = ({
       onClick={() => onSelect?.(style)}
     >
       {/* Image */}
-      <div className="relative rounded-lg overflow-hidden">
+      <div className="relative rounded-xl overflow-hidden">
         <img
           src={style.url}
           alt={style.title}
@@ -52,8 +52,8 @@ const StyleCard = ({
         
         {/* Selection indicator - top left when selected */}
         {isSelected && (
-          <div className="absolute top-2 left-2 w-6 h-6 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
-            <Check size={14} className="text-white" />
+          <div className="absolute top-3 left-3 w-6 h-6 bg-gray-900 dark:bg-white rounded-full flex items-center justify-center shadow-lg">
+            <Check size={14} className="text-white dark:text-gray-900" />
           </div>
         )}
         
@@ -69,7 +69,7 @@ const StyleCard = ({
                 }}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                   isSelected 
-                    ? 'bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-lg' 
+                    ? 'bg-gray-900 text-white shadow-lg dark:bg-white dark:text-gray-900' 
                     : 'bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border border-white/30'
                 }`}
               >
@@ -142,7 +142,7 @@ const StyleGrid = ({
   }
 
   return (
-    <div className={`columns-3 gap-4 ${className}`} style={{ columnFill: 'balance' }}>
+    <div className={`columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 ${className}`} style={{ columnFill: 'balance' }}>
       {styles.map((style) => (
         <StyleCard
           key={style.id}

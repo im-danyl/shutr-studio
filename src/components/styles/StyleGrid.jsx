@@ -25,7 +25,7 @@ const StyleCard = ({
 
   return (
     <div 
-      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-6 break-inside-avoid ${
+      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
           ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20' 
           : 'hover:opacity-90'
@@ -142,7 +142,7 @@ const StyleGrid = ({
   }
 
   return (
-    <div className={`columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 ${className}`} style={{ columnFill: 'balance' }}>
+    <div className={`columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 ${className}`} style={{ columnFill: 'balance' }}>
       {styles.map((style) => (
         <StyleCard
           key={style.id}

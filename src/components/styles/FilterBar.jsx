@@ -25,7 +25,7 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full h-11 px-4 pr-10 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-1 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 cursor-pointer shadow-sm text-left flex items-center justify-between"
+        className="w-full h-11 px-4 pr-10 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-400 cursor-pointer shadow-sm text-left flex items-center justify-between"
       >
         <span className={selectedValue ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}>
           {displayValue}
@@ -118,7 +118,7 @@ const FilterBar = ({
               placeholder="Search styles..."
               value={filters.search || ''}
               onChange={(e) => updateFilter('search', e.target.value)}
-              className="w-full h-11 pl-11 pr-12 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-1 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 shadow-sm"
+              className="w-full h-11 pl-11 pr-12 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-400 shadow-sm"
             />
             {filters.search && (
               <button
@@ -171,7 +171,7 @@ const FilterBar = ({
             placeholder="Search styles by name or tags..."
             value={filters.search || ''}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full h-12 pl-12 pr-14 border border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-1 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-500 shadow-sm font-medium"
+            className="w-full h-12 pl-12 pr-14 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-gray-900 focus:border-gray-900 dark:focus:ring-white dark:focus:border-white outline-none transition-all duration-200 hover:border-gray-400 dark:hover:border-gray-400 shadow-sm font-medium"
           />
           {filters.search && (
             <button

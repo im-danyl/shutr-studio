@@ -69,7 +69,7 @@ const DropZone = ({
       >
         <input {...getInputProps()} />
         
-        <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
           <div className={`p-4 rounded-full transition-all duration-300 ease-out transform hover:scale-105 ${
             isDragActive 
               ? isDragAccept 
@@ -88,7 +88,7 @@ const DropZone = ({
             )}
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-2">
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
               {isDragActive 
                 ? isDragAccept 
@@ -98,15 +98,19 @@ const DropZone = ({
               }
             </h3>
             
+            <p className="text-gray-600 dark:text-gray-400">
+              {isDragActive 
+                ? isDragAccept 
+                  ? 'Release to upload' 
+                  : 'Please use a valid image file'
+                : 'Drag & drop, or click to browse'
+              }
+            </p>
+            
             {!isDragActive && (
-              <div className="space-y-2">
-                <p className="text-gray-600 dark:text-gray-400">
-                  Drag & drop, or <span className="text-blue-600 dark:text-blue-400 font-medium">click to browse</span>
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Max file size: 10MB
-                </p>
-              </div>
+              <p className="text-sm text-gray-500 dark:text-gray-500">
+                Max file size: 10MB
+              </p>
             )}
           </div>
         </div>

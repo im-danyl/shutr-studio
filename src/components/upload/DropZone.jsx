@@ -57,12 +57,12 @@ const DropZone = ({
       <div
         {...getRootProps()}
         className={`
-          relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
+          relative border border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
           ${isDragActive 
             ? isDragAccept 
               ? 'border-green-400 bg-green-50 dark:bg-green-950/20' 
               : 'border-red-400 bg-red-50 dark:bg-red-950/20'
-            : 'border-gray-300 dark:border-gray-600 hover:border-orange-400 dark:hover:border-orange-500'
+            : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}
         `}

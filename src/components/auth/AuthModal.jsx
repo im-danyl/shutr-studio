@@ -169,7 +169,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
         {/* Left side - Hero section */}
         <div className="hidden md:flex md:w-1/2 relative overflow-hidden">
           {/* Gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-400 via-red-500 to-pink-600" />
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
           
           {/* Content */}
           <div className="relative z-10 flex flex-col justify-center items-start p-12 text-white">
@@ -204,7 +204,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
           </div>
 
           {/* Mobile gradient header - only show on small screens */}
-          <div className="md:hidden w-full h-24 bg-gradient-to-r from-orange-400 to-pink-500 relative">
+          <div className="md:hidden w-full h-24 bg-gradient-to-r from-gray-800 to-gray-900 relative">
             <div className="absolute inset-0 flex items-center justify-center">
               <h1 className="text-white text-xl font-bold">Shutr Studio</h1>
             </div>
@@ -216,7 +216,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
               {/* Header */}
               <div className="text-center mb-8">
                 <div className="mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-white text-xl">✨</span>
                   </div>
                 </div>
@@ -247,7 +247,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
               <button
                 onClick={handleGoogleAuth}
                 disabled={loading || emailCheckLoading}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 mb-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 focus:ring-2 focus:ring-orange-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 mb-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 focus:ring-1 focus:ring-gray-400 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 {loading || emailCheckLoading ? (
                   <div className="animate-spin h-5 w-5 border-2 border-gray-400 border-t-transparent rounded-full" />
@@ -277,7 +277,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:outline-none transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 focus:outline-none transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                       placeholder="hi@hextastudio.in"
                       disabled={loading || emailCheckLoading || (mode !== 'getstarted')}
                       required
@@ -290,7 +290,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                           setPassword('')
                           setError('')
                         }}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-orange-500 hover:text-orange-600 font-medium"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 font-medium"
                       >
                         Edit
                       </button>
@@ -309,7 +309,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                         type={showPassword ? 'text' : 'password'}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:outline-none transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+                        className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-1 focus:ring-gray-400 focus:border-gray-400 focus:outline-none transition-all text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                         placeholder={mode === 'signup' ? '••••••••••' : 'Enter your password'}
                         disabled={loading}
                         required
@@ -329,7 +329,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                 <button
                   type="submit"
                   disabled={loading || emailCheckLoading}
-                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus:ring-2 focus:ring-orange-500 focus:outline-none hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+                  className="w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 focus:ring-1 focus:ring-gray-400 focus:outline-none hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {emailCheckLoading && (
                     <>
@@ -366,7 +366,7 @@ const AuthModal = ({ isOpen, onClose, mode: initialMode = 'getstarted' }) => {
                       setError('')
                       setPassword('')
                     }}
-                    className="text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors underline"
+                    className="text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors underline"
                     disabled={loading || emailCheckLoading}
                   >
                     {mode === 'signup' ? 'Login' : 'Sign Up'}

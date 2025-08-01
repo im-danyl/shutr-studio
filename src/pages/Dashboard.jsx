@@ -8,13 +8,13 @@ const Dashboard = () => {
     <div className="main-container">
       <div className="content-container">
         {/* Welcome Section */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+        <div className="mb-10">
+          <div className="flex items-center justify-between flex-wrap gap-6 mb-6">
             <div>
-              <h2 style={{ marginBottom: '8px' }}>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
                 Welcome to Shutr Studio
               </h2>
-              <p style={{ color: 'var(--text-muted)' }}>
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 Transform your product photos with AI-powered styling
               </p>
             </div>
@@ -30,8 +30,8 @@ const Dashboard = () => {
             style={{ textDecoration: 'none', transition: 'all 0.2s ease' }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div style={{ width: '48px', height: '48px', backgroundColor: 'rgba(0, 194, 255, 0.1)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Plus style={{ width: '24px', height: '24px', color: 'var(--accent-solid)' }} />
+              <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                <Plus className="w-6 h-6 text-gray-700 dark:text-gray-300" />
               </div>
               <span className="caption" style={{ color: 'var(--text-muted)' }}>Start here</span>
             </div>
@@ -47,8 +47,8 @@ const Dashboard = () => {
             style={{ textDecoration: 'none', transition: 'all 0.2s ease' }}
           >
             <div className="flex items-center justify-between mb-4">
-              <div style={{ width: '48px', height: '48px', backgroundColor: 'rgba(0, 194, 255, 0.1)', borderRadius: 'var(--radius-lg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Palette style={{ width: '24px', height: '24px', color: 'var(--accent-solid)' }} />
+              <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                <Palette className="w-6 h-6 text-gray-700 dark:text-gray-300" />
               </div>
               <span className="caption" style={{ color: 'var(--text-muted)' }}>50+ styles</span>
             </div>
@@ -76,7 +76,7 @@ const Dashboard = () => {
         <div className="card p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 style={{ fontWeight: '600', fontSize: '20px' }}>Account Status</h3>
-            <span style={{ padding: '4px 12px', backgroundColor: '#dcfce7', color: '#166534', fontSize: '14px', borderRadius: '20px' }}>
+            <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-medium rounded-full">
               Active
             </span>
           </div>

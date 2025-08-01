@@ -623,8 +623,8 @@ const Generate = () => {
             {currentStep === 1 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <h2 style={{ marginBottom: '8px' }}>Choose Your Reference Style</h2>
-                  <p className="body" style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>Select a style from our library or upload your own image to guide the AI.</p>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Choose Your Reference Style</h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Select a style from our library or upload your own image to guide the AI.</p>
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
@@ -679,7 +679,7 @@ const Generate = () => {
                   <div className="fixed bottom-6 right-6 z-50">
                     <button
                       onClick={() => setCurrentStep(2)}
-                      className="bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600 text-white px-8 py-4 rounded-full font-semibold shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3"
+                      className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 px-8 py-4 rounded-xl font-semibold shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3 border border-gray-800 dark:border-gray-200"
                     >
                       <span>Continue with Style</span>
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -694,8 +694,8 @@ const Generate = () => {
             {currentStep === 2 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 <div style={{ textAlign: 'center' }}>
-                  <h2 style={{ marginBottom: '8px' }}>Upload Your Product Image</h2>
-                  <p className="body" style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>This is the image that will be placed into the new scene.</p>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Upload Your Product Image</h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">This is the image that will be placed into the new scene.</p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
@@ -735,8 +735,8 @@ const Generate = () => {
             {currentStep === 3 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                  <div style={{ textAlign: 'center' }}>
-                  <h2 style={{ marginBottom: '8px' }}>Your AI Generated Photos</h2>
-                  <p className="body" style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto' }}>Here are the results. Download your favorites or regenerate.</p>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">Your AI Generated Photos</h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Here are the results. Download your favorites or regenerate.</p>
                 </div>
 
                 {!isGenerating && generatedImages.length > 0 && (

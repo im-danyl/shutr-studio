@@ -23,9 +23,9 @@ const CreditBalance = ({ className = "" }) => {
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-50 via-red-50 to-pink-50 dark:from-orange-950/20 dark:via-red-950/20 dark:to-pink-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+      <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full">
+          <div className="p-1.5 bg-gray-700 dark:bg-gray-600 rounded-full">
             <Coins size={14} className="text-white" />
           </div>
           
@@ -41,7 +41,7 @@ const CreditBalance = ({ className = "" }) => {
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Credits:
               </span>
-              <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-pink-500">
+              <span className="text-lg font-bold text-gray-900 dark:text-white">
                 {credits}
               </span>
             </div>

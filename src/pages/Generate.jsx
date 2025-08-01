@@ -4,7 +4,7 @@ import useCreditStore from '../store/creditStore';
 import CreditCostPreview from '../components/credits/CreditCostPreview';
 import InsufficientCreditsModal from '../components/credits/InsufficientCreditsModal';
 import SuccessCelebration from '../components/ui/SuccessCelebration';
-import { mockStyleReferences, filterStyles } from '../data/mockStyles';
+import { useStyleReferences } from '../hooks/useStyleReferences';
 import FilterBar from '../components/styles/FilterBar';
 import StyleGrid from '../components/styles/StyleGrid';
 
@@ -508,7 +508,10 @@ const Generate = () => {
   const { credits, fetchCredits, consumeCredits, checkCreditsAvailable } = useCreditStore();
 
   // Filter states for style library
-  const [styleFilters, setStyleFilters] = useState({});
+  const [styleFilters, setStyleFilters] = useState({})
+  
+  // Use the same style references hook as StyleLibrary
+  const { styles, loading: stylesLoading, error: stylesError, filterStyles } = useStyleReferences();
 
   // Fetch credits when user changes
   useEffect(() => {
@@ -582,7 +585,7 @@ const Generate = () => {
   const hasActiveFilters = Object.values(styleFilters).some(value => value && value !== 'All');
   
   // Filter styles based on current filters
-  const filteredStyles = filterStyles(mockStyleReferences, styleFilters);
+  const filteredStyles = filterStyles(styles, styleFilters);
   
   const handleStyleSelect = (style) => {
     setSelectedReference(selectedReference?.id === style.id ? null : style);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Upload, X, Check, AlertCircle, Image, Tag, Palette, Package, Background } from 'lucide-react'
+import { Upload, X, Check, AlertCircle, Image, Tag, Palette, Package, Square } from 'lucide-react'
 import { storage } from '../../lib/supabase'
 import { supabase } from '../../lib/supabase'
 import useAuthStore from '../../store/authStore'
@@ -285,7 +285,7 @@ const StyleUploader = ({ onUploadComplete, className = "" }) => {
                       {/* Background Style */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          <Background size={16} className="inline mr-1" />
+                          <Square size={16} className="inline mr-1" />
                           Background
                         </label>
                         <select

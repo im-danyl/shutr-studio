@@ -673,6 +673,21 @@ const Generate = () => {
                   showDetails={true}
                   emptyMessage="No styles match your current filters. Try adjusting your search criteria."
                 />
+
+                {/* Floating Continue Button */}
+                {(selectedReference || customReference) && (
+                  <div className="fixed bottom-6 right-6 z-50">
+                    <button
+                      onClick={() => setCurrentStep(2)}
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-semibold shadow-2xl transition-all duration-300 hover:scale-105 flex items-center gap-3"
+                    >
+                      <span>Continue with Style</span>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

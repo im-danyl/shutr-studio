@@ -669,8 +669,8 @@ const Generate = () => {
                   selectedStyleId={selectedReference?.id}
                   onStyleSelect={handleStyleSelect}
                   onStylePreview={handleStylePreview}
-                  size="medium"
-                  showDetails={false}
+                  size="large"
+                  showDetails={true}
                   emptyMessage="No styles match your current filters. Try adjusting your search criteria."
                 />
               </div>

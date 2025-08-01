@@ -25,11 +25,11 @@ const StyleLibrary = () => {
     <div className="main-container">
       <div className="content-container">
         {/* Header */}
-        <div className="mb-8">
-          <h2 style={{ marginBottom: '8px' }}>
+        <div className="mb-10">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
             Style Library
           </h2>
-          <p style={{ color: 'var(--text-muted)' }}>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl">
             Browse our curated collection of professional styling references for your AI generations
           </p>
         </div>
@@ -47,19 +47,19 @@ const StyleLibrary = () => {
 
         {/* Loading State */}
         {loading && (
-          <div className="text-center py-12">
-            <div className="animate-spin h-8 w-8 border-2 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p style={{ color: 'var(--text-muted)' }}>Loading style library...</p>
+          <div className="text-center py-16">
+            <div className="animate-spin h-10 w-10 border-2 border-gray-300 dark:border-gray-600 border-t-gray-900 dark:border-t-white rounded-full mx-auto mb-6"></div>
+            <p className="text-lg font-medium text-gray-700 dark:text-gray-300">Loading style library...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="text-center py-12">
-            <p className="text-red-500 mb-4">Error loading styles: {error}</p>
+          <div className="text-center py-16">
+            <p className="text-lg text-red-600 dark:text-red-400 mb-6 font-medium">Error loading styles: {error}</p>
             <button 
               onClick={fetchStyles}
-              className="button variant-outline"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-200 font-medium shadow-sm"
             >
               Try Again
             </button>
@@ -70,11 +70,11 @@ const StyleLibrary = () => {
         {!loading && !error && (
           <>
             {/* Results Count */}
-            <div className="mb-6">
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>
-                Showing {filteredStyles.length} of {styles.length} styles
+            <div className="mb-8">
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Showing <span className="font-semibold text-gray-900 dark:text-white">{filteredStyles.length}</span> of <span className="font-semibold text-gray-900 dark:text-white">{styles.length}</span> styles
                 {Object.keys(filters).length > 0 && (
-                  <span> • {Object.keys(filters).length} filter{Object.keys(filters).length !== 1 ? 's' : ''} applied</span>
+                  <span className="text-gray-500 dark:text-gray-400"> • {Object.keys(filters).length} filter{Object.keys(filters).length !== 1 ? 's' : ''} applied</span>
                 )}
               </p>
             </div>

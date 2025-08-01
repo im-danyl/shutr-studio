@@ -16,14 +16,13 @@ const StyleCard = ({
 
   return (
     <div 
-      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer ${
+      className={`group relative overflow-hidden transition-all duration-200 cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-orange-500' 
+          ? 'ring-2 ring-orange-500 rounded-lg shadow-lg' 
           : 'hover:opacity-90'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => onSelect?.(style)}
     >
       {/* Image */}
       <div className="relative rounded-lg overflow-hidden">
@@ -61,6 +60,23 @@ const StyleCard = ({
                   {style.mood}
                 </span>
               )}
+            </div>
+            
+            {/* Center section - Select button */}
+            <div className="flex justify-center">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelect?.(style)
+                }}
+                className={`px-6 py-2 rounded-full font-medium transition-all duration-200 ${
+                  isSelected 
+                    ? 'bg-orange-500 text-white border border-orange-500' 
+                    : 'bg-white/20 backdrop-blur-sm text-white border border-white/30 hover:bg-white/30'
+                }`}
+              >
+                {isSelected ? '✓ Selected' : 'Select Style'}
+              </button>
             </div>
             
             {/* Bottom section - Main details */}
@@ -145,11 +161,7 @@ const StyleGrid = ({
   }
 
   return (
-    <div className={`grid gap-4 ${
-      size === 'small' ? 'grid-cols-4 md:grid-cols-6 lg:grid-cols-8' :
-      size === 'medium' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' :
-      'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
-    } ${className}`} style={{ gridAutoRows: 'min-content' }}>
+    <div className={`columns-3 gap-4 ${className}`} style={{ columnFill: 'balance' }}>
       {styles.map((style) => (
         <StyleCard
           key={style.id}

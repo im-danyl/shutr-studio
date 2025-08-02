@@ -114,28 +114,32 @@ const Button = ({ children, variant = "default", size = "default", className, di
   );
 };
 
-// Custom Select Component with styled dropdown menu
-const CustomSelect = ({ value, onChange, options }) => {
-  const [isOpen, setIsOpen] = useState(false);
+// Custom Select Component with shared state management
+const CustomSelect = ({ value, onChange, options, id, openDropdown, setOpenDropdown }) => {
   const selectRef = React.useRef(null);
+  const isOpen = openDropdown === id;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
-        setIsOpen(false);
+        setOpenDropdown(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [setOpenDropdown]);
 
   const selectedOption = options.find(opt => opt.value === value);
+
+  const handleToggle = () => {
+    setOpenDropdown(isOpen ? null : id);
+  };
 
   return (
     <div className="custom-select-container" ref={selectRef}>
       <button
         className="custom-select-trigger"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggle}
         type="button"
       >
         <span>{selectedOption?.label || 'Select...'}</span>
@@ -155,7 +159,7 @@ const CustomSelect = ({ value, onChange, options }) => {
               className={`custom-select-option ${option.value === value ? 'selected' : ''}`}
               onClick={() => {
                 onChange(option.value);
-                setIsOpen(false);
+                setOpenDropdown(null);
               }}
               type="button"
             >
@@ -426,6 +430,7 @@ const UploadDropzone = ({ onFileUploaded, accept = 'image/*', className, maxSize
 // Settings Accordion Component
 const SettingsAccordion = ({ settings, onSettingsChange }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   const updateSetting = (key, value) => {
     onSettingsChange({
@@ -434,10 +439,16 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
     });
   };
 
+  const handleAccordionToggle = () => {
+    setIsOpen(!isOpen);
+    // Close any open dropdowns when accordion is toggled
+    setOpenDropdown(null);
+  };
+
   return (
     <Card>
       <div>
-        <button className="accordion-trigger" onClick={() => setIsOpen(!isOpen)}>
+        <button className="accordion-trigger" onClick={handleAccordionToggle}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontWeight: '500' }}>Generation Settings</span>
             <span className="caption" style={{ color: 'var(--text-muted)' }}>(Optional)</span>
@@ -451,8 +462,11 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
               <div className="form-group">
                 <label className="form-label">Aspect Ratio</label>
                 <CustomSelect 
+                  id="aspectRatio"
                   value={settings.aspectRatio} 
                   onChange={(value) => updateSetting('aspectRatio', value)}
+                  openDropdown={openDropdown}
+                  setOpenDropdown={setOpenDropdown}
                   options={[
                     { value: '1:1', label: 'Square (1:1)' },
                     { value: '4:3', label: 'Landscape (4:3)' },
@@ -472,8 +486,11 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
               <div className="form-group">
                 <label className="form-label">Number of Variants</label>
                 <CustomSelect 
+                  id="variants"
                   value={settings.variants.toString()} 
                   onChange={(value) => updateSetting('variants', parseInt(value))}
+                  openDropdown={openDropdown}
+                  setOpenDropdown={setOpenDropdown}
                   options={[
                     { value: '1', label: '1 variant' },
                     { value: '2', label: '2 variants' },

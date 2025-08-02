@@ -250,12 +250,32 @@ select.select-trigger:focus,
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     overflow: hidden;
     animation: dropdown-enter 0.15s ease-out;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Position dropdown upward if near bottom of viewport */
+.custom-select-container.dropdown-up .custom-select-dropdown {
+    top: auto;
+    bottom: calc(100% + 4px);
+    animation: dropdown-enter-up 0.15s ease-out;
 }
 
 @keyframes dropdown-enter {
     from {
         opacity: 0;
         transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dropdown-enter-up {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
     }
     to {
         opacity: 1;

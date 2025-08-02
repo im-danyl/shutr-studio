@@ -173,33 +173,41 @@ a:hover {
     overflow: visible !important;
     z-index: auto;
 }
-.select-trigger {
-    display: flex;
+/* Enhanced native select styling */
+select.select-trigger {
+    display: block;
     width: 100%;
-    height: 40px;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
+    height: 44px;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--border);
     background-color: var(--surface);
     padding: 0 16px;
     font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: scale(1);
-    /* Ensure clicks work */
-    pointer-events: auto;
-    user-select: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    background-position: right 16px center;
+    background-size: 16px;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666'><path d='m6 9 6 6 6-6'/></svg>");
 }
-.select-trigger:hover {
-    transform: scale(1.01);
-    border-color: var(--text-muted);
+select.select-trigger:hover {
+    border-color: var(--accent-soft);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
-.select-trigger:active {
-    transform: scale(0.99);
-    transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+select.select-trigger:focus {
+    outline: none;
+    border-color: var(--accent-solid);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 2px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
-.select-trigger:focus { outline: none; box-shadow: 0 0 0 2px var(--accent-solid); }
+select.select-trigger:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 .select-content {
     position: absolute;
     top: calc(100% + 4px);

@@ -27,11 +27,11 @@ const StyleCard = ({
     <div 
       className={`group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-blue-500 rounded-xl scale-[1.02]' 
+          ? 'ring-2 ring-blue-600 rounded-xl scale-[1.02]' 
           : 'hover:opacity-90 hover:scale-[1.01]'
       }`}
       style={isSelected ? {
-        boxShadow: '0 0 0 2px rgb(59 130 246), 0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.3), 0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+        boxShadow: '0 0 0 2px rgb(37 99 235), 0 0 16px rgba(79, 70, 229, 0.4), 0 0 32px rgba(37, 99, 235, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.25)'
       } : {}}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

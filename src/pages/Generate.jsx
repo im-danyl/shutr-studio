@@ -117,11 +117,11 @@ const Button = ({ children, variant = "default", size = "default", className, di
 // Select components
 const Select = ({ children, value, onValueChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [internalValue, setInternalValue] = useState(value);
+  const [internalValue, setInternalValue] = useState(value || '');
   const selectRef = React.useRef(null);
 
   useEffect(() => {
-    setInternalValue(value);
+    setInternalValue(value || '');
   }, [value]);
 
   useEffect(() => {
@@ -145,7 +145,9 @@ const Select = ({ children, value, onValueChange }) => {
           value: internalValue, 
           setValue: (newValue) => {
             setInternalValue(newValue);
-            onValueChange?.(newValue);
+            if (typeof onValueChange === 'function') {
+              onValueChange(newValue);
+            }
           }
         })
       )}
@@ -159,8 +161,9 @@ const SelectTrigger = ({ children, className, isOpen, setIsOpen }) => (
     onClick={(e) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('SelectTrigger clicked, isOpen:', isOpen);
-      setIsOpen(!isOpen);
+      if (typeof setIsOpen === 'function') {
+        setIsOpen(!isOpen);
+      }
     }}
   >
     {children}
@@ -184,9 +187,12 @@ const SelectItem = ({ children, value, setIsOpen, setValue }) => (
     onClick={(e) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log('SelectItem clicked:', value);
-      setValue(value);
-      setIsOpen(false);
+      if (typeof setValue === 'function') {
+        setValue(value);
+      }
+      if (typeof setIsOpen === 'function') {
+        setIsOpen(false);
+      }
     }}
   >
     {children}

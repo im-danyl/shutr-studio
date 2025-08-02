@@ -114,6 +114,60 @@ const Button = ({ children, variant = "default", size = "default", className, di
   );
 };
 
+// Custom Select Component with styled dropdown menu
+const CustomSelect = ({ value, onChange, options }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = React.useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const selectedOption = options.find(opt => opt.value === value);
+
+  return (
+    <div className="custom-select-container" ref={selectRef}>
+      <button
+        className="custom-select-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+        type="button"
+      >
+        <span>{selectedOption?.label || 'Select...'}</span>
+        <ChevronDownIcon style={{ 
+          transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', 
+          transition: 'transform 0.2s ease',
+          width: '16px',
+          height: '16px'
+        }} />
+      </button>
+      
+      {isOpen && (
+        <div className="custom-select-dropdown">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              className={`custom-select-option ${option.value === value ? 'selected' : ''}`}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              type="button"
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Select components
 const Select = ({ children, value, onValueChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -396,18 +450,17 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div className="form-group">
                 <label className="form-label">Aspect Ratio</label>
-                <select 
+                <CustomSelect 
                   value={settings.aspectRatio} 
-                  onChange={(e) => updateSetting('aspectRatio', e.target.value)}
-                  className="select-trigger"
-                  style={{ appearance: 'none' }}
-                >
-                  <option value="1:1">Square (1:1)</option>
-                  <option value="4:3">Landscape (4:3)</option>
-                  <option value="3:4">Portrait (3:4)</option>
-                  <option value="16:9">Wide (16:9)</option>
-                  <option value="9:16">Tall (9:16)</option>
-                </select>
+                  onChange={(value) => updateSetting('aspectRatio', value)}
+                  options={[
+                    { value: '1:1', label: 'Square (1:1)' },
+                    { value: '4:3', label: 'Landscape (4:3)' },
+                    { value: '3:4', label: 'Portrait (3:4)' },
+                    { value: '16:9', label: 'Wide (16:9)' },
+                    { value: '9:16', label: 'Tall (9:16)' }
+                  ]}
+                />
               </div>
               <div className="form-group">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -418,17 +471,16 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
               </div>
               <div className="form-group">
                 <label className="form-label">Number of Variants</label>
-                <select 
+                <CustomSelect 
                   value={settings.variants.toString()} 
-                  onChange={(e) => updateSetting('variants', parseInt(e.target.value))}
-                  className="select-trigger"
-                  style={{ appearance: 'none' }}
-                >
-                  <option value="1">1 variant</option>
-                  <option value="2">2 variants</option>
-                  <option value="3">3 variants</option>
-                  <option value="4">4 variants</option>
-                </select>
+                  onChange={(value) => updateSetting('variants', parseInt(value))}
+                  options={[
+                    { value: '1', label: '1 variant' },
+                    { value: '2', label: '2 variants' },
+                    { value: '3', label: '3 variants' },
+                    { value: '4', label: '4 variants' }
+                  ]}
+                />
               </div>
             </div>
           </div>

@@ -51,10 +51,10 @@ const CreditBalance = ({ className = "" }) => {
         <button
           onClick={handleRefresh}
           disabled={loading}
-          className="p-1 hover:bg-white/50 dark:hover:bg-gray-800/50 rounded transition-colors disabled:opacity-50"
+          className="p-0.5 hover:bg-white/30 dark:hover:bg-gray-700/30 rounded transition-colors disabled:opacity-50 opacity-60 hover:opacity-100"
           title="Refresh credit balance"
         >
-          <RefreshCw size={12} className={`text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw size={10} className={`text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 ${loading ? 'animate-spin' : ''}`} />
         </button>
       </div>
     </div>

@@ -27,9 +27,12 @@ const StyleCard = ({
     <div 
       className={`group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20' 
-          : 'hover:opacity-90'
+          ? 'ring-4 ring-blue-500 rounded-xl shadow-2xl shadow-blue-500/40 scale-[1.02]' 
+          : 'hover:opacity-90 hover:scale-[1.01]'
       }`}
+      style={isSelected ? {
+        boxShadow: '0 0 0 4px rgb(59 130 246), 0 0 32px rgba(59, 130, 246, 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+      } : {}}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => onSelect?.(style)}

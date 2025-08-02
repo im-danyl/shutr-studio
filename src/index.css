@@ -155,7 +155,10 @@ a:hover {
 }
 
 /* SELECT */
-.select-container { position: relative; }
+.select-container { 
+    position: relative; 
+    isolation: isolate;
+}
 .select-trigger {
     display: flex;
     width: 100%;
@@ -185,16 +188,19 @@ a:hover {
     top: calc(100% + 4px);
     left: 0;
     right: 0;
-    z-index: 50;
+    z-index: 9999;
     max-height: 240px;
     overflow-y: auto;
     border-radius: var(--radius);
     border: 1px solid var(--border);
     background-color: var(--surface);
     padding: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     animation: select-dropdown-enter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: top;
+    /* Ensure proper stacking and containment */
+    contain: layout style paint;
+    will-change: transform, opacity;
 }
 @keyframes select-dropdown-enter {
     from {

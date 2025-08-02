@@ -17,7 +17,8 @@
       "Bash(mv:*)",
       "Bash(node:*)",
       "Bash(npm run deploy:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(move:*)"
     ],
     "deny": []
   }

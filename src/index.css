@@ -78,11 +78,11 @@ p { font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0; }
     transform: translateY(0);
 }
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 .dark .card:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* BUTTON */
@@ -272,13 +272,11 @@ a:hover {
     transform: scale(1);
 }
 .upload-zone:hover {
-    transform: scale(1.01);
-    border-color: var(--accent-solid);
+    border-color: var(--text-muted);
 }
 .upload-zone.drag-active { 
     border-color: var(--accent-solid); 
     background-color: var(--border); 
-    transform: scale(1.02);
 }
 .upload-icon-wrapper {
     width: 64px;
@@ -292,8 +290,7 @@ a:hover {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .upload-zone:hover .upload-icon-wrapper {
-    transform: scale(1.1);
-    background-color: var(--accent-solid);
+    background-color: var(--text-muted);
     color: white;
 }
 

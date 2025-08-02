@@ -25,10 +25,10 @@ const StyleCard = ({
 
   return (
     <div 
-      className={`group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer mb-4 break-inside-avoid transform ${
+      className={`group relative overflow-hidden transition-all duration-300 ease-out cursor-pointer mb-4 break-inside-avoid ${
         isSelected 
-          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20 scale-[1.02]' 
-          : 'hover:opacity-90 hover:scale-[1.01]'
+          ? 'ring-2 ring-cyan-400 rounded-xl shadow-lg shadow-cyan-400/20' 
+          : 'hover:opacity-90'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

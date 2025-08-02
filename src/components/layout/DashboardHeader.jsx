@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Camera, User, Settings, LogOut, ChevronDown } from 'lucide-react'
 import useAuthStore from '../../store/authStore'
+import CreditBalance from '../credits/CreditBalance'
 
 const DashboardHeader = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
@@ -67,6 +68,9 @@ const DashboardHeader = () => {
               Styles
             </Link>
           </nav>
+
+          {/* Credit Balance */}
+          <CreditBalance />
 
           {/* User Menu */}
           <div style={{ position: 'relative' }}>

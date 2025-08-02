@@ -461,20 +461,18 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div className="form-group">
                 <label className="form-label">Aspect Ratio</label>
-                <CustomSelect 
-                  id="aspectRatio"
+                <select 
                   value={settings.aspectRatio} 
-                  onChange={(value) => updateSetting('aspectRatio', value)}
-                  openDropdown={openDropdown}
-                  setOpenDropdown={setOpenDropdown}
-                  options={[
-                    { value: '1:1', label: 'Square (1:1)' },
-                    { value: '4:3', label: 'Landscape (4:3)' },
-                    { value: '3:4', label: 'Portrait (3:4)' },
-                    { value: '16:9', label: 'Wide (16:9)' },
-                    { value: '9:16', label: 'Tall (9:16)' }
-                  ]}
-                />
+                  onChange={(e) => updateSetting('aspectRatio', e.target.value)}
+                  className="select-trigger"
+                  style={{ appearance: 'none' }}
+                >
+                  <option value="1:1">Square (1:1)</option>
+                  <option value="4:3">Landscape (4:3)</option>
+                  <option value="3:4">Portrait (3:4)</option>
+                  <option value="16:9">Wide (16:9)</option>
+                  <option value="9:16">Tall (9:16)</option>
+                </select>
               </div>
               <div className="form-group">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -485,19 +483,17 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
               </div>
               <div className="form-group">
                 <label className="form-label">Number of Variants</label>
-                <CustomSelect 
-                  id="variants"
+                <select 
                   value={settings.variants.toString()} 
-                  onChange={(value) => updateSetting('variants', parseInt(value))}
-                  openDropdown={openDropdown}
-                  setOpenDropdown={setOpenDropdown}
-                  options={[
-                    { value: '1', label: '1 variant' },
-                    { value: '2', label: '2 variants' },
-                    { value: '3', label: '3 variants' },
-                    { value: '4', label: '4 variants' }
-                  ]}
-                />
+                  onChange={(e) => updateSetting('variants', parseInt(e.target.value))}
+                  className="select-trigger"
+                  style={{ appearance: 'none' }}
+                >
+                  <option value="1">1 variant</option>
+                  <option value="2">2 variants</option>
+                  <option value="3">3 variants</option>
+                  <option value="4">4 variants</option>
+                </select>
               </div>
             </div>
           </div>

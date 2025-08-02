@@ -45,7 +45,7 @@ const StyleCard = ({
           onLoad={() => setImageLoaded(true)}
           className={`w-full h-auto object-cover transition-all duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
-          } ${isHovered ? 'scale-105' : 'scale-100'}`}
+          } ${isHovered ? 'scale-110' : 'scale-100'}`}
         />
         
         {/* Loading placeholder */}

@@ -76,6 +76,8 @@ p { font-size: 16px; font-weight: 400; line-height: 1.6; margin: 0; }
     border-radius: var(--radius-lg);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(0);
+    /* Ensure dropdowns can escape card boundaries */
+    overflow: visible;
 }
 .card:hover {
     transform: translateY(-1px);
@@ -158,6 +160,18 @@ a:hover {
 .select-container { 
     position: relative; 
     isolation: isolate;
+    z-index: 1000;
+}
+/* Ensure accordion containers don't clip dropdowns */
+.select-container:has(.select-content) {
+    z-index: 100000;
+    isolation: isolate;
+}
+/* Ensure all parent containers allow dropdown overflow */
+.card:has(.select-container),
+.form-group:has(.select-container) {
+    overflow: visible !important;
+    z-index: auto;
 }
 .select-trigger {
     display: flex;
@@ -188,19 +202,22 @@ a:hover {
     top: calc(100% + 4px);
     left: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 99999;
     max-height: 240px;
     overflow-y: auto;
     border-radius: var(--radius);
-    border: 1px solid var(--border);
+    border: 2px solid var(--border);
     background-color: var(--surface);
     padding: 4px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     animation: select-dropdown-enter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: top;
     /* Ensure proper stacking and containment */
-    contain: layout style paint;
+    contain: layout;
     will-change: transform, opacity;
+    /* Force hardware acceleration and create new stacking context */
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 @keyframes select-dropdown-enter {
     from {
@@ -455,8 +472,18 @@ a:hover {
     background-color: var(--border);
     transform: translateX(2px);
 }
-.form-group { display: flex; flex-direction: column; gap: 8px; }
-.form-label { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.form-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    overflow: visible;
+    position: relative;
+}
+.form-label { 
+    font-size: 14px; 
+    font-weight: 500; 
+    color: var(--text-primary); 
+}
 
 /* UTILITY CLASSES */
 .text-center { text-align: center; }

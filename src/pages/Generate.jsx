@@ -137,7 +137,7 @@ const Select = ({ children, value, onValueChange }) => {
   }, []);
 
   return (
-    <div className="select-container" ref={selectRef}>
+    <div className={`select-container ${isOpen ? 'select-open' : ''}`} ref={selectRef}>
       {React.Children.map(children, child => 
         React.cloneElement(child, { 
           isOpen, 
@@ -156,7 +156,12 @@ const Select = ({ children, value, onValueChange }) => {
 const SelectTrigger = ({ children, className, isOpen, setIsOpen }) => (
   <button
     className={cn("select-trigger", className)}
-    onClick={() => setIsOpen(!isOpen)}
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('SelectTrigger clicked, isOpen:', isOpen);
+      setIsOpen(!isOpen);
+    }}
   >
     {children}
     <ChevronDownIcon style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
@@ -176,7 +181,10 @@ const SelectContent = ({ children, isOpen }) => (
 const SelectItem = ({ children, value, setIsOpen, setValue }) => (
   <div
     className="select-item"
-    onClick={() => {
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('SelectItem clicked:', value);
       setValue(value);
       setIsOpen(false);
     }}

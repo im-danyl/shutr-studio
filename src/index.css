@@ -163,13 +163,13 @@ a:hover {
     z-index: 1000;
 }
 /* Ensure accordion containers don't clip dropdowns */
-.select-container:has(.select-content) {
+.select-container.select-open {
     z-index: 100000;
     isolation: isolate;
 }
 /* Ensure all parent containers allow dropdown overflow */
-.card:has(.select-container),
-.form-group:has(.select-container) {
+.card.has-select,
+.form-group.has-select {
     overflow: visible !important;
     z-index: auto;
 }
@@ -187,6 +187,9 @@ a:hover {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: scale(1);
+    /* Ensure clicks work */
+    pointer-events: auto;
+    user-select: none;
 }
 .select-trigger:hover {
     transform: scale(1.01);
@@ -218,6 +221,8 @@ a:hover {
     /* Force hardware acceleration and create new stacking context */
     transform: translateZ(0);
     backface-visibility: hidden;
+    /* Ensure clicks work */
+    pointer-events: auto;
 }
 @keyframes select-dropdown-enter {
     from {
@@ -239,10 +244,17 @@ a:hover {
     font-size: 14px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(0);
+    /* Ensure clicks work */
+    pointer-events: auto;
+    user-select: none;
 }
 .select-item:hover { 
     background-color: var(--border); 
     transform: translateX(2px);
+}
+.select-item:active {
+    background-color: var(--accent-soft);
+    transform: translateX(0px);
 }
 
 /* SLIDER */

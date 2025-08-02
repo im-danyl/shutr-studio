@@ -396,16 +396,18 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               <div className="form-group">
                 <label className="form-label">Aspect Ratio</label>
-                <Select value={settings.aspectRatio} onValueChange={(value) => updateSetting('aspectRatio', value)}>
-                  <SelectTrigger><SelectValue value={settings.aspectRatio} /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1:1">Square (1:1)</SelectItem>
-                    <SelectItem value="4:3">Landscape (4:3)</SelectItem>
-                    <SelectItem value="3:4">Portrait (3:4)</SelectItem>
-                    <SelectItem value="16:9">Wide (16:9)</SelectItem>
-                    <SelectItem value="9:16">Tall (9:16)</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select 
+                  value={settings.aspectRatio} 
+                  onChange={(e) => updateSetting('aspectRatio', e.target.value)}
+                  className="select-trigger"
+                  style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 4 5\'><path fill=\'%23666\' d=\'M2 0L0 2h4zm0 5L0 3h4z\'/></svg>")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '12px' }}
+                >
+                  <option value="1:1">Square (1:1)</option>
+                  <option value="4:3">Landscape (4:3)</option>
+                  <option value="3:4">Portrait (3:4)</option>
+                  <option value="16:9">Wide (16:9)</option>
+                  <option value="9:16">Tall (9:16)</option>
+                </select>
               </div>
               <div className="form-group">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -416,15 +418,17 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
               </div>
               <div className="form-group">
                 <label className="form-label">Number of Variants</label>
-                <Select value={settings.variants.toString()} onValueChange={(value) => updateSetting('variants', parseInt(value))}>
-                  <SelectTrigger><SelectValue value={`${settings.variants} variant${settings.variants > 1 ? 's' : ''}`} /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 variant</SelectItem>
-                    <SelectItem value="2">2 variants</SelectItem>
-                    <SelectItem value="3">3 variants</SelectItem>
-                    <SelectItem value="4">4 variants</SelectItem>
-                  </SelectContent>
-                </Select>
+                <select 
+                  value={settings.variants.toString()} 
+                  onChange={(e) => updateSetting('variants', parseInt(e.target.value))}
+                  className="select-trigger"
+                  style={{ appearance: 'none', backgroundImage: 'url("data:image/svg+xml;charset=US-ASCII,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 4 5\'><path fill=\'%23666\' d=\'M2 0L0 2h4zm0 5L0 3h4z\'/></svg>")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center', backgroundSize: '12px' }}
+                >
+                  <option value="1">1 variant</option>
+                  <option value="2">2 variants</option>
+                  <option value="3">3 variants</option>
+                  <option value="4">4 variants</option>
+                </select>
               </div>
             </div>
           </div>

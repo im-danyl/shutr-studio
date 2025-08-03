@@ -92,75 +92,92 @@ export const openai = {
     }
   },
 
-  // Generate styled product images based on reference style
-  generateStyledProduct: async (productImageFile, styleReferenceUrl, variantCount = 1, productAnalysis = null) => {
+  // Generate styled product images based on reference style (main function used by hooks)
+  generateStyledProduct: async (productImageFile, styleReferenceUrl, options = {}) => {
     try {
-      const productImageDataUrl = await fileToBase64(productImageFile)
+      // Extract options with cost-optimized defaults
+      const {
+        variantCount = 1,
+        aspectRatio = '1:1',
+        quality = 'standard', // Always use standard quality to minimize costs (~$0.02 vs $0.07+ for HD)
+        styleDescription = '',
+        productDescription = ''
+      } = options
+
+      console.log(`Starting generation: ${variantCount} variants`)
       
-      // Create variations by modifying the prompt slightly for each variant
-      const variants = []
-      
-      for (let i = 0; i < variantCount; i++) {
-        const variantPrompt = `You are an expert product photographer and AI image generator. 
-
-Generate a professionally styled product photograph that:
-
-1. PRESERVES the exact product from the uploaded image - same shape, features, and proportions
-2. APPLIES the aesthetic style, mood, and composition from the reference style image
-3. Maintains product clarity and commercial photography quality
-4. Uses appropriate lighting, shadows, and depth of field
-5. ${i > 0 ? `Creates variation ${i + 1} with slight compositional differences (different angle, lighting, or arrangement)` : 'Uses the primary composition style'}
-
-${productAnalysis ? `Product context: ${JSON.stringify(productAnalysis)}` : ''}
-
-Important: The product itself must remain unchanged - only change the styling, background, lighting, and composition to match the reference aesthetic.
-
-Generate a high-quality product photograph that would be suitable for e-commerce or marketing use.`
-
-        const messages = [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: variantPrompt
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: productImageDataUrl,
-                  detail: 'high'
-                }
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: styleReferenceUrl,
-                  detail: 'high'
-                }
-              }
-            ]
-          }
-        ]
-
-        // Note: GPT-4 Vision can analyze and describe images but cannot generate new images
-        // For actual image generation, we would need to use DALL-E 3 API
-        // This is a placeholder for the generation logic
-        const response = await makeOpenAIRequest(messages, { maxTokens: 1000 })
-        
-        // For now, we'll simulate image generation
-        // In production, this would call DALL-E 3 API with the generated prompt
-        variants.push({
-          variant: i + 1,
-          prompt: response.choices[0].message.content,
-          imageUrl: null // Would contain the generated image URL from DALL-E 3
-        })
+      // Step 1: Analyze the product image to understand what we're working with
+      const analysisResult = await openai.analyzeProductImage(productImageFile)
+      if (!analysisResult.success) {
+        console.warn('Product analysis failed, continuing without analysis')
       }
 
+      // Step 2: Generate variations using DALL-E 3
+      const images = []
+      
+      for (let i = 0; i < variantCount; i++) {
+        console.log(`Generating variant ${i + 1}/${variantCount}`)
+        
+        // Create detailed prompt for DALL-E 3
+        let basePrompt = `Professional product photography of a high-quality product. `
+        
+        // Add product context if available
+        if (analysisResult.success) {
+          const analysis = analysisResult.analysis
+          basePrompt += `The product is a ${analysis.product_type} with key features: ${analysis.key_features.join(', ')}. `
+        }
+        
+        // Add custom descriptions if provided
+        if (productDescription) {
+          basePrompt += `Product details: ${productDescription}. `
+        }
+        
+        if (styleDescription) {
+          basePrompt += `Style direction: ${styleDescription}. `
+        }
+        
+        // Add variation-specific instructions
+        if (i > 0) {
+          basePrompt += `Variation ${i + 1}: Show from a slightly different angle or with adjusted lighting composition. `
+        }
+        
+        // Add quality and technical requirements
+        basePrompt += `High-quality commercial photography, professional lighting, sharp focus on product, clean composition, suitable for e-commerce use.`
+        
+        // Map aspect ratio to GPT Image 1 size (optimized for low cost)
+        let imageSize = '1024x1024' // Default square - cheapest option (~$0.02)
+        if (aspectRatio === '16:9' || aspectRatio === 'landscape') {
+          imageSize = '1024x1024' // Force square to minimize cost instead of 1792x1024
+        } else if (aspectRatio === '9:16' || aspectRatio === 'portrait') {
+          imageSize = '1024x1024' // Force square to minimize cost instead of 1024x1792
+        }
+        
+        // Note: Using 1024x1024 for all ratios to keep costs at ~$0.02 per image
+        // Users can crop/adjust aspect ratio after download if needed
+        
+        // Generate image with GPT Image 1
+        const gptImageResult = await openai.generateImageWithGPTImage1(basePrompt, imageSize, quality)
+        
+        if (gptImageResult.success) {
+          images.push({
+            url: gptImageResult.imageUrl,
+            revised_prompt: gptImageResult.revisedPrompt,
+            variant: i + 1
+          })
+          console.log(`Successfully generated variant ${i + 1}`)
+        } else {
+          console.error(`Failed to generate variant ${i + 1}:`, gptImageResult.error)
+          throw new Error(`Failed to generate variant ${i + 1}: ${gptImageResult.error}`)
+        }
+      }
+
+      console.log(`Generation complete: ${images.length} images generated`)
+      
       return {
         success: true,
-        variants,
-        totalGenerated: variantCount
+        images,
+        totalGenerated: images.length,
+        analysis: analysisResult.success ? analysisResult.analysis : null
       }
     } catch (error) {
       console.error('Error generating styled product:', error)
@@ -171,8 +188,9 @@ Generate a high-quality product photograph that would be suitable for e-commerce
     }
   },
 
-  // Generate DALL-E 3 image (separate API call)
-  generateImageWithDallE: async (prompt, size = '1024x1024', quality = 'standard') => {
+  // Generate GPT Image 1 image (OpenAI's latest image generation model)
+  // Default to smallest size and standard quality to minimize costs
+  generateImageWithGPTImage1: async (prompt, size = '1024x1024', quality = 'standard') => {
     try {
       const response = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
@@ -181,7 +199,7 @@ Generate a high-quality product photograph that would be suitable for e-commerce
           'Authorization': `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'dall-e-3',
+          model: 'gpt-image-1',
           prompt,
           n: 1,
           size,
@@ -191,17 +209,17 @@ Generate a high-quality product photograph that would be suitable for e-commerce
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(`DALL-E API Error: ${error.error?.message || 'Unknown error'}`)
+        throw new Error(`GPT Image 1 API Error: ${error.error?.message || 'Unknown error'}`)
       }
 
       const result = await response.json()
       return {
         success: true,
         imageUrl: result.data[0].url,
-        revisedPrompt: result.data[0].revised_prompt
+        revisedPrompt: result.data[0].revised_prompt || result.data[0].prompt
       }
     } catch (error) {
-      console.error('Error generating image with DALL-E:', error)
+      console.error('Error generating image with GPT Image 1:', error)
       return {
         success: false,
         error: error.message
@@ -209,7 +227,7 @@ Generate a high-quality product photograph that would be suitable for e-commerce
     }
   },
 
-  // Combined workflow: analyze product, generate prompt, create image with DALL-E
+  // Combined workflow: analyze product, generate prompt, create image with GPT Image 1
   generateProductVariations: async (productImageFile, styleReferenceUrl, variantCount = 1) => {
     try {
       // Step 1: Analyze the product image
@@ -218,7 +236,7 @@ Generate a high-quality product photograph that would be suitable for e-commerce
         throw new Error('Failed to analyze product image')
       }
 
-      // Step 2: Generate variations using DALL-E 3
+      // Step 2: Generate variations using GPT Image 1
       const variations = []
       
       for (let i = 0; i < variantCount; i++) {
@@ -232,16 +250,16 @@ ${i > 0 ? `Variation ${i + 1}: Show from a slightly different angle or with adju
 
 High-quality, commercial photography, professional lighting, sharp focus on product.`
 
-        const dalleResult = await openai.generateImageWithDallE(basePrompt)
+        const gptImageResult = await openai.generateImageWithGPTImage1(basePrompt)
         
-        if (dalleResult.success) {
+        if (gptImageResult.success) {
           variations.push({
             variant: i + 1,
-            imageUrl: dalleResult.imageUrl,
-            prompt: dalleResult.revisedPrompt
+            imageUrl: gptImageResult.imageUrl,
+            prompt: gptImageResult.revisedPrompt
           })
         } else {
-          console.error(`Failed to generate variation ${i + 1}:`, dalleResult.error)
+          console.error(`Failed to generate variation ${i + 1}:`, gptImageResult.error)
         }
       }
 

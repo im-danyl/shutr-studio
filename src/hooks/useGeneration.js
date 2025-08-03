@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { generateStyledProduct } from '../lib/openai'
+import { openai } from '../lib/openai'
 import useAuthStore from '../store/authStore'
 import useCreditStore from '../store/creditStore'
 
@@ -20,8 +20,8 @@ const useGeneration = () => {
       productImage,
       styleReference,
       variantCount = 1,
-      aspectRatio = '1:1',
-      quality = 'standard',
+      aspectRatio = '1:1', // Always square for lowest cost
+      quality = 'standard', // Always standard for lowest cost (~$0.02 vs HD ~$0.07)
       styleDescription = '',
       productDescription = ''
     } = options
@@ -66,7 +66,7 @@ const useGeneration = () => {
       setCurrentStep(`Generating ${variantCount} variant${variantCount !== 1 ? 's' : ''}...`)
       setProgress(30)
       
-      const generationResult = await generateStyledProduct(
+      const generationResult = await openai.generateStyledProduct(
         productImage,
         styleReference,
         {

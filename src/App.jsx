@@ -10,6 +10,7 @@ import StyleLibrary from './pages/StyleLibrary'
 import Generate from './pages/Generate'
 import Results from './pages/Results'
 import AdminStyles from './pages/AdminStyles'
+import Onboarding from './pages/Onboarding'
 import useAuthStore from './store/authStore'
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         {/* Public routes without Layout */}
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/onboarding" element={<Onboarding />} />
         
         {/* Routes with Layout */}
         <Route path="/*" element={

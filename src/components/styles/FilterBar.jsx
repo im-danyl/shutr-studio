@@ -1,6 +1,5 @@
 import React from 'react'
 import { Search, X, Filter } from 'lucide-react'
-import { filterOptions } from '../../data/mockStyles'
 
 // Custom Dropdown Component with modern styling
 const Select = ({ value, onValueChange, placeholder, options }) => {
@@ -88,6 +87,13 @@ const Select = ({ value, onValueChange, placeholder, options }) => {
 const FilterBar = ({ 
   filters = {}, 
   onFiltersChange, 
+  filterOptions = {
+    categories: ['All'],
+    containers: ['All'],
+    backgrounds: ['All'],
+    moods: ['All'],
+    aspectRatios: ['All', '1:1', '3:4', '4:3', '9:16', '16:9']
+  },
   showSearch = true,
   showAdvanced = true,
   compact = false,

@@ -558,7 +558,13 @@ const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, set
             <div className="image-wrapper">
               <img src={image} alt={`Generated ${index + 1}`} />
               <div className="hover-overlay">
-                <Button size="sm" variant="secondary"><DownloadIcon style={{ marginRight: '8px' }} />Download</Button>
+                <Button 
+                  size="sm" 
+                  variant="secondary" 
+                  onClick={() => handleDownloadImage(image, `generated-${index + 1}.png`)}
+                >
+                  <DownloadIcon style={{ marginRight: '8px' }} />Download
+                </Button>
                 <Button size="sm" variant="secondary"><HeartIcon /></Button>
               </div>
             </div>
@@ -594,7 +600,7 @@ const Generate = () => {
   const [styleFilters, setStyleFilters] = useState({})
   
   // Use the same style references hook as StyleLibrary
-  const { styles, loading: stylesLoading, error: stylesError, filterStyles } = useStyleReferences();
+  const { styles, loading: stylesLoading, error: stylesError, filterOptions, filterStyles } = useStyleReferences();
 
   // Fetch credits when user changes
   useEffect(() => {
@@ -695,6 +701,54 @@ const Generate = () => {
     setProductImage(URL.createObjectURL(file));
   }
 
+  const handleDownloadImage = async (imageUrl, filename) => {
+    try {
+      // Fetch the image
+      const response = await fetch(imageUrl)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`)
+      }
+
+      const blob = await response.blob()
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename || `generated-${Date.now()}.png`
+      
+      // Trigger download
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url)
+      
+    } catch (error) {
+      console.error('Download failed:', error)
+      alert('Download failed. Please try again.')
+    }
+  }
+
+  const handleDownloadAll = async () => {
+    if (generatedImages.length === 0) return
+    
+    try {
+      // Download each image with a small delay to avoid overwhelming the browser
+      for (let i = 0; i < generatedImages.length; i++) {
+        await handleDownloadImage(generatedImages[i], `generated-${i + 1}.png`)
+        // Small delay between downloads
+        if (i < generatedImages.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500))
+        }
+      }
+    } catch (error) {
+      console.error('Download all failed:', error)
+      alert('Some downloads may have failed. Please try downloading individual images.')
+    }
+  }
+
   return (
     <div>
 
@@ -741,6 +795,7 @@ const Generate = () => {
                   <FilterBar
                     filters={styleFilters}
                     onFiltersChange={setStyleFilters}
+                    filterOptions={filterOptions}
                     showSearch={true}
                     showAdvanced={true}
                     compact={false}
@@ -826,7 +881,7 @@ const Generate = () => {
                     <Card style={{ padding: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                             <Button onClick={handleGenerate}><RefreshCwIcon style={{ marginRight: '8px' }} />Regenerate</Button>
-                            <Button variant="outline" onClick={() => {/* TODO: Implement download all */}}><DownloadIcon style={{ marginRight: '8px' }} />Download All</Button>
+                            <Button variant="outline" onClick={() => handleDownloadAll()}><DownloadIcon style={{ marginRight: '8px' }} />Download All</Button>
                             <Button variant="outline" onClick={() => {/* TODO: Implement share */}}><ShareIcon style={{ marginRight: '8px' }} />Share Results</Button>
                         </div>
                     </Card>

@@ -5,6 +5,13 @@ export const useStyleReferences = () => {
   const [styles, setStyles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [filterOptions, setFilterOptions] = useState({
+    categories: ['All'],
+    containers: ['All'],
+    backgrounds: ['All'],
+    moods: ['All'],
+    aspectRatios: ['All', '1:1', '3:4', '4:3', '9:16', '16:9']
+  })
 
   const fetchStyles = async () => {
     try {
@@ -42,6 +49,20 @@ export const useStyleReferences = () => {
       })
       
       setStyles(transformedStyles)
+      
+      // Generate dynamic filter options from the actual data
+      const categories = ['All', ...new Set(transformedStyles.map(s => s.category))]
+      const containers = ['All', ...new Set(transformedStyles.map(s => s.container))]
+      const backgrounds = ['All', ...new Set(transformedStyles.map(s => s.background))]
+      const moods = ['All', ...new Set(transformedStyles.map(s => s.mood))]
+      
+      setFilterOptions({
+        categories,
+        containers,
+        backgrounds,
+        moods,
+        aspectRatios: ['All', '1:1', '3:4', '4:3', '9:16', '16:9']
+      })
     } catch (err) {
       setError(err.message)
       console.error('Error fetching styles:', err)
@@ -79,6 +100,7 @@ export const useStyleReferences = () => {
     styles,
     loading,
     error,
+    filterOptions,
     fetchStyles,
     filterStyles
   }

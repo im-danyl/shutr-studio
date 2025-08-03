@@ -6,7 +6,7 @@ import StyleGrid from '../components/styles/StyleGrid'
 const StyleLibrary = () => {
   const [filters, setFilters] = useState({})
   const [selectedStyleId, setSelectedStyleId] = useState(null)
-  const { styles, loading, error, fetchStyles, filterStyles } = useStyleReferences()
+  const { styles, loading, error, filterOptions, fetchStyles, filterStyles } = useStyleReferences()
 
   // Filter styles based on current filters
   const filteredStyles = useMemo(() => {
@@ -39,6 +39,7 @@ const StyleLibrary = () => {
           <FilterBar
             filters={filters}
             onFiltersChange={setFilters}
+            filterOptions={filterOptions}
             showSearch={true}
             showAdvanced={true}
             compact={false}

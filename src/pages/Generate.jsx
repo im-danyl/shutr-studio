@@ -561,7 +561,21 @@ const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, set
                 <Button 
                   size="sm" 
                   variant="secondary" 
-                  onClick={() => onDownloadImage && onDownloadImage(image, `generated-${index + 1}.png`)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Download button clicked for image:', index + 1);
+                    if (onDownloadImage) {
+                      onDownloadImage(image, `generated-${index + 1}.png`);
+                    } else {
+                      console.error('onDownloadImage not available');
+                    }
+                  }}
+                  style={{ 
+                    cursor: 'pointer',
+                    pointerEvents: 'auto',
+                    zIndex: 20
+                  }}
                 >
                   <DownloadIcon style={{ marginRight: '8px' }} />Download
                 </Button>
@@ -577,16 +591,31 @@ const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, set
 
 // Main Generate Page Component
 const Generate = () => {
-  const [selectedReference, setSelectedReference] = useState(null);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [productImage, setProductImage] = useState(null);
-  const [customReference, setCustomReference] = useState(null);
-  const [settings, setSettings] = useState({
-    aspectRatio: '1:1',
-    quality: 80,
-    variants: 4
+  const [selectedReference, setSelectedReference] = useState(() => {
+    const saved = sessionStorage.getItem('shutr-selectedReference');
+    return saved ? JSON.parse(saved) : null;
   });
-  const [generatedImages, setGeneratedImages] = useState([]);
+  const [currentStep, setCurrentStep] = useState(() => {
+    return parseInt(sessionStorage.getItem('shutr-currentStep')) || 1;
+  });
+  const [productImage, setProductImage] = useState(() => {
+    return sessionStorage.getItem('shutr-productImage') || null;
+  });
+  const [customReference, setCustomReference] = useState(() => {
+    return sessionStorage.getItem('shutr-customReference') || null;
+  });
+  const [settings, setSettings] = useState(() => {
+    const saved = sessionStorage.getItem('shutr-settings');
+    return saved ? JSON.parse(saved) : {
+      aspectRatio: '1:1',
+      quality: 80,
+      variants: 4
+    };
+  });
+  const [generatedImages, setGeneratedImages] = useState(() => {
+    const saved = sessionStorage.getItem('shutr-generatedImages');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [isGenerating, setIsGenerating] = useState(false);
   const [theme, setTheme] = useState('light'); // 'light' or 'dark'
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
@@ -608,6 +637,31 @@ const Generate = () => {
       fetchCredits(user.id);
     }
   }, [user, fetchCredits]);
+
+  // Save state to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('shutr-selectedReference', JSON.stringify(selectedReference));
+  }, [selectedReference]);
+
+  useEffect(() => {
+    sessionStorage.setItem('shutr-currentStep', currentStep.toString());
+  }, [currentStep]);
+
+  useEffect(() => {
+    sessionStorage.setItem('shutr-productImage', productImage || '');
+  }, [productImage]);
+
+  useEffect(() => {
+    sessionStorage.setItem('shutr-customReference', customReference || '');
+  }, [customReference]);
+
+  useEffect(() => {
+    sessionStorage.setItem('shutr-settings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    sessionStorage.setItem('shutr-generatedImages', JSON.stringify(generatedImages));
+  }, [generatedImages]);
 
   const handleGenerate = async () => {
     if (!productImage || !user) return;
@@ -660,6 +714,13 @@ const Generate = () => {
     setGeneratedImages([]);
     setSelectedReference(null);
     setIsGenerating(false);
+    
+    // Clear sessionStorage
+    sessionStorage.removeItem('shutr-selectedReference');
+    sessionStorage.removeItem('shutr-currentStep');
+    sessionStorage.removeItem('shutr-productImage');
+    sessionStorage.removeItem('shutr-customReference');
+    sessionStorage.removeItem('shutr-generatedImages');
   };
 
   const clearFilters = () => {

@@ -504,7 +504,7 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
 };
 
 // Generated Gallery Component
-const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, settings }) => {
+const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, settings, onDownloadImage }) => {
   if (isLoading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -561,7 +561,7 @@ const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, set
                 <Button 
                   size="sm" 
                   variant="secondary" 
-                  onClick={() => handleDownloadImage(image, `generated-${index + 1}.png`)}
+                  onClick={() => onDownloadImage && onDownloadImage(image, `generated-${index + 1}.png`)}
                 >
                   <DownloadIcon style={{ marginRight: '8px' }} />Download
                 </Button>
@@ -887,7 +887,7 @@ const Generate = () => {
                     </Card>
                 )}
 
-                <GeneratedGallery isLoading={isGenerating} images={generatedImages} productImage={productImage} referenceImage={customReference || selectedReference?.url} settings={settings} />
+                <GeneratedGallery isLoading={isGenerating} images={generatedImages} productImage={productImage} referenceImage={customReference || selectedReference?.url} settings={settings} onDownloadImage={handleDownloadImage} />
 
                 {!isGenerating && (
                   <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>

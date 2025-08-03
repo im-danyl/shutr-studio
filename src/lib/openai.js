@@ -99,7 +99,7 @@ export const openai = {
       const {
         variantCount = 1,
         aspectRatio = '1:1',
-        quality = 'standard', // Always use standard quality to minimize costs (~$0.02 vs $0.07+ for HD)
+        quality = 'low', // Always use low quality to minimize costs
         styleDescription = '',
         productDescription = ''
       } = options
@@ -155,7 +155,7 @@ export const openai = {
         // Note: Using 1024x1024 for all ratios to keep costs at ~$0.02 per image
         // Users can crop/adjust aspect ratio after download if needed
         
-        // Generate image with GPT Image 1
+        // Generate image with DALL-E 3 (GPT Image 1 requires organization verification)
         const gptImageResult = await openai.generateImageWithGPTImage1(basePrompt, imageSize, quality)
         
         if (gptImageResult.success) {
@@ -188,9 +188,9 @@ export const openai = {
     }
   },
 
-  // Generate GPT Image 1 image (OpenAI's latest image generation model)
+  // Generate DALL-E 3 image (GPT Image 1 requires organization verification)
   // Default to smallest size and standard quality to minimize costs
-  generateImageWithGPTImage1: async (prompt, size = '1024x1024', quality = 'standard') => {
+  generateImageWithGPTImage1: async (prompt, size = '1024x1024', quality = 'low') => {
     try {
       const response = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
@@ -199,11 +199,11 @@ export const openai = {
           'Authorization': `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-image-1',
+          model: 'dall-e-3',
           prompt,
           n: 1,
           size,
-          quality
+          quality: quality === 'low' ? 'standard' : 'hd'
         })
       })
 
@@ -216,7 +216,7 @@ export const openai = {
       return {
         success: true,
         imageUrl: result.data[0].url,
-        revisedPrompt: result.data[0].revised_prompt || result.data[0].prompt
+        revisedPrompt: result.data[0].revised_prompt || prompt
       }
     } catch (error) {
       console.error('Error generating image with GPT Image 1:', error)

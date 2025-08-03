@@ -21,7 +21,7 @@ const useGeneration = () => {
       styleReference,
       variantCount = 1,
       aspectRatio = '1:1', // Always square for lowest cost
-      quality = 'standard', // Always standard for lowest cost (~$0.02 vs HD ~$0.07)
+      quality = 'low', // Always low for lowest cost
       styleDescription = '',
       productDescription = ''
     } = options

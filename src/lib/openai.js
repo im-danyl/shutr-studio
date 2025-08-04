@@ -345,8 +345,8 @@ Return a detailed JSON response:
         success: true,
         images,
         totalGenerated: images.length,
-        styleAnalysis: styleAnalysis,
-        productAnalysis: productAnalysis
+        styleAnalysis: analysis.style_analysis,
+        productAnalysis: analysis.product_analysis
       }
     } catch (error) {
       console.error('Error in style transfer generation:', error)

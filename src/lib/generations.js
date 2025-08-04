@@ -32,13 +32,13 @@ export const generationsService = {
         
         console.log(`Uploading ${productFileName} (${Math.round(productFile.size / 1024)}KB)...`)
         
-        // Add timeout wrapper for upload
+        // Add timeout wrapper for upload with longer timeout
         const uploadPromise = supabase.storage
           .from('product-images')
           .upload(`${userId}/${productFileName}`, productFile)
         
         const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Upload timeout after 30 seconds')), 30000)
+          setTimeout(() => reject(new Error('Upload timeout after 60 seconds')), 60000)
         )
         
         const { data: productUploadData, error: productUploadError } = await Promise.race([

@@ -139,6 +139,8 @@ const useGeneration = () => {
     try {
       // Step 1: Create persistent generation in database
       setProgress(5)
+      setCurrentStep('Setting up generation...')
+      
       const createResult = await generationsService.createGeneration(
         user.id,
         URL.createObjectURL(productImage), // Convert File to URL for upload
@@ -148,19 +150,34 @@ const useGeneration = () => {
       )
 
       if (!createResult.success) {
-        throw new Error(createResult.error || 'Failed to create generation')
+        // If database creation fails, continue with local generation only
+        console.warn('Database generation creation failed, continuing with local generation:', createResult.error)
+        persistentGenerationId = `local_${Date.now()}`
+      } else {
+        persistentGenerationId = createResult.generationId
       }
-
-      persistentGenerationId = createResult.generationId
+      
       setGenerationId(persistentGenerationId)
       
-      // Update progress in database
-      await generationsService.updateProgress(persistentGenerationId, 10, 'Analyzing images...')
+      // Update progress in database (skip if local generation)
+      if (!persistentGenerationId.startsWith('local_')) {
+        try {
+          await generationsService.updateProgress(persistentGenerationId, 10, 'Analyzing images...')
+        } catch (error) {
+          console.warn('Progress update failed, continuing:', error.message)
+        }
+      }
       setCurrentStep('Analyzing style and product images...')
       setProgress(10)
       
       // Step 2: Generate images
-      await generationsService.updateProgress(persistentGenerationId, 30, `Generating ${variantCount} variants...`)
+      if (!persistentGenerationId.startsWith('local_')) {
+        try {
+          await generationsService.updateProgress(persistentGenerationId, 30, `Generating ${variantCount} variants...`)
+        } catch (error) {
+          console.warn('Progress update failed, continuing:', error.message)
+        }
+      }
       setCurrentStep(`Generating ${variantCount} variant${variantCount !== 1 ? 's' : ''}...`)
       setProgress(30)
       
@@ -182,22 +199,31 @@ const useGeneration = () => {
         throw new Error(generationResult.error || 'Generation failed')
       }
       
-      // Step 3: Complete generation in database
-      await generationsService.updateProgress(persistentGenerationId, 90, 'Saving results...')
+      // Step 3: Complete generation in database (skip if local generation)
       setCurrentStep('Saving results...')
       setProgress(90)
       
       const imageUrls = generationResult.images.map(img => img.url)
       
-      const completeResult = await generationsService.completeGeneration(
-        persistentGenerationId,
-        imageUrls,
-        generationResult.styleAnalysis,
-        generationResult.productAnalysis
-      )
-      
-      if (!completeResult.success) {
-        console.error('Failed to complete generation in database:', completeResult.error)
+      if (!persistentGenerationId.startsWith('local_')) {
+        try {
+          await generationsService.updateProgress(persistentGenerationId, 90, 'Saving results...')
+          
+          const completeResult = await generationsService.completeGeneration(
+            persistentGenerationId,
+            imageUrls,
+            generationResult.styleAnalysis,
+            generationResult.productAnalysis
+          )
+          
+          if (!completeResult.success) {
+            console.error('Failed to complete generation in database:', completeResult.error)
+          }
+        } catch (error) {
+          console.warn('Database completion failed, but generation succeeded:', error.message)
+        }
+      } else {
+        console.log('Local generation - skipping database completion')
       }
       
       // Step 4: Process results for UI
@@ -214,11 +240,21 @@ const useGeneration = () => {
       setProgress(100)
       setCurrentStep('Complete!')
       
-      // Update final status
-      await generationsService.updateProgress(persistentGenerationId, 100, 'Complete!')
+      // Update final status (skip if local generation)
+      if (!persistentGenerationId.startsWith('local_')) {
+        try {
+          await generationsService.updateProgress(persistentGenerationId, 100, 'Complete!')
+        } catch (error) {
+          console.warn('Final progress update failed:', error.message)
+        }
+      }
       
       // Refresh credits to show updated balance
-      await fetchCredits(user.id)
+      try {
+        await fetchCredits(user.id)
+      } catch (error) {
+        console.warn('Credit refresh failed:', error.message)
+      }
       
       return {
         success: true,
@@ -232,14 +268,16 @@ const useGeneration = () => {
       console.error('Generation failed:', error)
       setError(error.message || 'Generation failed')
       
-      // Fail generation in database and refund credits
-      if (persistentGenerationId) {
+      // Fail generation in database and refund credits (skip if local generation)
+      if (persistentGenerationId && !persistentGenerationId.startsWith('local_')) {
         try {
           await generationsService.failGeneration(persistentGenerationId, error.message)
           await fetchCredits(user.id) // Refresh credits after refund
         } catch (failError) {
           console.error('Failed to fail generation in database:', failError)
         }
+      } else if (persistentGenerationId && persistentGenerationId.startsWith('local_')) {
+        console.log('Local generation failed - no database cleanup needed')
       }
       
       throw error

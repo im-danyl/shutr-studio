@@ -82,28 +82,29 @@ export const openai = {
           content: [
             {
               type: 'text',
-              text: `You are an expert in style transfer. I will show you two images:
+              text: `You are an expert in product photography and seamless background integration. I will show you two images:
 
-IMAGE 1 (STYLE REFERENCE): The exact aesthetic, lighting, and composition I want to replicate
-IMAGE 2 (PRODUCT): The product that needs to be styled
+IMAGE 1 (STYLE REFERENCE): The background environment and aesthetic I want to replicate
+IMAGE 2 (PRODUCT): The exact product that needs to be photographed in the new environment
 
-Your task: Analyze both images simultaneously and create the perfect prompt for generating a new image that applies the EXACT style from image 1 to the product from image 2.
+Your task: Analyze both images and create a prompt for generating a new image that places the EXACT product from image 2 into the EXACT environment from image 1, with perfect integration.
 
-Focus on transferring these elements precisely:
-🎨 LIGHTING: Direction, intensity, softness, color temperature
-🏠 BACKGROUND: Type, color, texture, depth, props
-📐 COMPOSITION: Camera angle, framing, perspective  
-🎭 MOOD: Atmosphere, aesthetic feeling
-🎨 COLORS: Palette, saturation, tones
-✨ MATERIALS: Surface textures, reflections, finishes
+CRITICAL REQUIREMENTS:
+🏷️ PRODUCT ACCURACY: Preserve ALL product details - branding, logos, text, colors, proportions, materials, finish
+🎯 BRAND ELEMENTS: Keep any visible brand names, logos, labels, or text EXACTLY as shown
+📏 DIMENSIONS: Maintain accurate product size and proportions relative to the environment
+🎨 SEAMLESS INTEGRATION: The product must look naturally placed, not copy-pasted
+💡 LIGHTING MATCH: Product lighting must match the environment's lighting direction and quality
+🌅 BACKGROUND BLEND: Perfect environmental integration with proper shadows, reflections, depth
+📐 PERSPECTIVE: Product angle should work naturally with the scene perspective
 
 Return a detailed JSON response:
 {
-  "style_analysis": "Detailed description of the style reference",
-  "product_analysis": "Key features of the product to preserve", 
-  "transfer_strategy": "How to apply style to product specifically",
-  "generation_prompt": "Perfect prompt for image generation",
-  "key_elements": ["critical", "elements", "to", "preserve"]
+  "style_analysis": "Detailed description of the background environment and lighting",
+  "product_analysis": "Exact product details that MUST be preserved (branding, text, colors, materials)", 
+  "integration_strategy": "How to seamlessly integrate the product into the environment",
+  "generation_prompt": "Detailed prompt emphasizing product accuracy and seamless background integration",
+  "critical_elements": ["specific", "product", "details", "that", "must", "not", "change"]
 }`
             },
             {
@@ -124,7 +125,7 @@ Return a detailed JSON response:
       const analysis = JSON.parse(content)
       
       console.log('✅ DUAL IMAGE ANALYSIS SUCCESSFUL!')
-      console.log('Style Transfer Strategy:', analysis.transfer_strategy)
+      console.log('Integration Strategy:', analysis.integration_strategy)
       
       return {
         success: true,
@@ -152,9 +153,9 @@ Return a detailed JSON response:
         analysis: {
           style_analysis: styleResult.analysis,
           product_analysis: productResult.analysis,
-          transfer_strategy: "Combine style and product analyses",
-          generation_prompt: `Professional product photography combining ${JSON.stringify(styleResult.analysis)} with ${JSON.stringify(productResult.analysis)}`,
-          key_elements: ['lighting', 'background', 'composition']
+          integration_strategy: "Seamlessly integrate product into background environment while preserving all product details",
+          generation_prompt: `Professional product photography showing the exact product from the second image naturally placed in the environment from the first image. Preserve all product branding, text, colors, and proportions while seamlessly integrating into the background with matching lighting and realistic shadows.`,
+          critical_elements: ['branding', 'text', 'proportions', 'colors', 'materials']
         }
       }
     }
@@ -182,17 +183,20 @@ Return a detailed JSON response:
           content: [
             {
               type: 'text',
-              text: `Analyze this style reference and return JSON with these elements:
+              text: `Analyze this background environment reference for seamless product integration:
               {
-                "lighting_style": "lighting type",
-                "background_type": "background description", 
-                "color_palette": ["main", "colors"],
-                "composition_style": "composition style",
-                "mood_aesthetic": "overall mood",
-                "props_elements": ["visible", "props"],
-                "key_visual_elements": "key characteristics"
+                "environment_type": "specific environment/setting description",
+                "lighting_setup": "detailed lighting direction, quality, color temperature, shadows",
+                "background_elements": "specific background objects, textures, surfaces", 
+                "color_palette": ["dominant", "environmental", "colors"],
+                "spatial_depth": "foreground, midground, background arrangement",
+                "surface_materials": "floor, wall, or surface materials and textures",
+                "atmosphere": "overall mood and ambiance",
+                "integration_points": "where and how a product would naturally fit",
+                "shadow_patterns": "how shadows fall in this environment",
+                "reflection_surfaces": "any reflective surfaces that would show the product"
               }
-              Return only valid JSON.`
+              Focus on environmental details needed for realistic product placement. Return only valid JSON.`
             },
             {
               type: 'image_url',
@@ -235,14 +239,19 @@ Return a detailed JSON response:
           content: [
             {
               type: 'text',
-              text: `Analyze this product and return JSON:
+              text: `Analyze this product in extreme detail and return JSON:
               {
-                "product_type": "product category",
-                "key_features": ["main", "features", "to", "preserve"],
-                "dominant_colors": ["colors"],
-                "current_background": "background type"
+                "product_type": "specific product category and subcategory",
+                "brand_elements": "any visible branding, logos, text, labels",
+                "key_features": ["specific", "physical", "features", "to", "preserve"],
+                "dominant_colors": ["exact", "product", "colors"],
+                "materials": ["surface", "materials", "and", "finishes"],
+                "dimensions": "apparent size and proportions",
+                "text_content": "any visible text or numbers on the product",
+                "unique_details": "distinctive design elements that make this product recognizable",
+                "current_background": "current background environment"
               }
-              Return only valid JSON.`
+              Focus on details that would be critical for recreating this EXACT product. Return only valid JSON.`
             },
             {
               type: 'image_url',
@@ -307,22 +316,28 @@ Return a detailed JSON response:
       for (let i = 0; i < variantCount; i++) {
         console.log(`Generating style transfer variant ${i + 1}/${variantCount}`)
         
-        // 🎯 Use ADVANCED prompt from dual-image analysis
-        let styleTransferPrompt = analysis.generation_prompt
+        // 🎯 Use ADVANCED prompt from dual-image analysis with enhanced product accuracy
+        let integrationPrompt = analysis.generation_prompt
+        
+        // Add specific product accuracy requirements
+        integrationPrompt += ` CRITICAL: The product must be EXACTLY as shown in the original - preserve all branding, logos, text, colors, materials, and proportions perfectly. Do not alter, stylize, or modify any product details.`
+        
+        // Add seamless integration requirements
+        integrationPrompt += ` The product should appear naturally placed in the environment with realistic lighting, shadows, and reflections that match the background scene.`
         
         // Add variation specifics if multiple variants
         if (i > 0) {
-          styleTransferPrompt += ` Variation ${i + 1}: Show from a slightly different angle while maintaining the exact same style, lighting, and composition.`
+          integrationPrompt += ` Variation ${i + 1}: Show from a slightly different camera angle while maintaining perfect product accuracy and seamless environmental integration.`
         }
         
-        // Ensure high quality output
-        styleTransferPrompt += ` Professional commercial photography, sharp focus, high detail.`
+        // Ensure high quality output with emphasis on accuracy
+        integrationPrompt += ` Professional commercial photography, photorealistic, sharp focus, high detail, accurate product representation.`
         
-        console.log(`🎨 Variant ${i + 1} ADVANCED prompt:`, styleTransferPrompt)
+        console.log(`🎨 Variant ${i + 1} ADVANCED integration prompt:`, integrationPrompt)
         
         // Generate with PREMIUM settings
         const imageSize = '1024x1024' // High quality size
-        const gptImageResult = await openai.generateImageWithGPTImage1(styleTransferPrompt, imageSize, quality)
+        const gptImageResult = await openai.generateImageWithGPTImage1(integrationPrompt, imageSize, quality)
         
         if (gptImageResult.success) {
           images.push({
@@ -330,7 +345,7 @@ Return a detailed JSON response:
             revised_prompt: gptImageResult.revisedPrompt,
             variant: i + 1,
             dualAnalysis: analysis,
-            transfer_strategy: analysis.transfer_strategy
+            integration_strategy: analysis.integration_strategy
           })
           console.log(`Successfully generated style transfer variant ${i + 1}`)
         } else {

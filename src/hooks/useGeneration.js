@@ -181,8 +181,8 @@ const useGeneration = () => {
       setCurrentStep(`Generating ${variantCount} variant${variantCount !== 1 ? 's' : ''}...`)
       setProgress(30)
       
-      // 🚀 Use REVOLUTIONARY hybrid generation workflow
-      const generationResult = await openai.generateHybridProductPhotography(
+      // 🎯 Use IMPROVED traditional method with much better prompts
+      const generationResult = await openai.generateStyledProduct(
         productImage,
         styleReference,
         {
@@ -190,8 +190,7 @@ const useGeneration = () => {
           aspectRatio,
           quality,
           styleDescription,
-          productDescription,
-          method: 'auto' // Automatically select best method
+          productDescription
         }
       )
       

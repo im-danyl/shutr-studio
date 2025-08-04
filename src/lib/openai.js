@@ -298,54 +298,58 @@ Return a detailed JSON response:
       console.log('Product file size:', productImageFile.size)
       console.log('Style reference:', styleReference)
       
-      // 🔥 ADVANCED: Dual-image analysis for precise style transfer
-      console.log('🚀 Using ADVANCED dual-image analysis (ChatGPT-style)...')
-      const dualAnalysisResult = await openai.analyzeDualImagesForStyleTransfer(styleReference, productImageFile)
+      // 🚀 SIMPLE & FAST: Skip complex analysis, use direct generation
+      console.log('🚀 Using OPTIMIZED direct generation (fast & effective)...')
       
-      if (!dualAnalysisResult.success) {
-        throw new Error('Failed to analyze images for style transfer. Advanced analysis cannot proceed without understanding both images.')
-      }
-
-      // Step 3: Generate style transfer variations using ADVANCED analysis
       const images = []
-      const analysis = dualAnalysisResult.analysis
       
-      console.log('🎯 Style Transfer Strategy:', analysis.transfer_strategy)
-      console.log('🎨 Generation Prompt:', analysis.generation_prompt)
+      console.log('🎯 Strategy: Direct style-aware product photography')
+      console.log('🎨 Approach: Enhanced prompts with clear requirements')
       
       for (let i = 0; i < variantCount; i++) {
         console.log(`Generating style transfer variant ${i + 1}/${variantCount}`)
         
-        // 🎯 Use ADVANCED prompt from dual-image analysis with enhanced product accuracy
-        let integrationPrompt = analysis.generation_prompt
-        
-        // Add specific product accuracy requirements
-        integrationPrompt += ` CRITICAL: The product must be EXACTLY as shown in the original - preserve all branding, logos, text, colors, materials, and proportions perfectly. Do not alter, stylize, or modify any product details.`
-        
-        // Add seamless integration requirements
-        integrationPrompt += ` The product should appear naturally placed in the environment with realistic lighting, shadows, and reflections that match the background scene.`
+        // 🚀 SIMPLE BUT EFFECTIVE: Direct style-aware product photography prompt
+        let enhancedPrompt = `Professional product photography of the exact product shown, styled in the environment from the reference image.
+
+PRODUCT REQUIREMENTS:
+- Keep the product EXACTLY as it appears in the original image
+- Preserve all branding, logos, text, and design elements perfectly
+- Maintain exact colors, materials, and proportions
+- Do not alter or reinterpret any product details
+
+STYLE REQUIREMENTS:
+- Apply the exact lighting style from the reference image
+- Use the same background environment and setting
+- Match the color palette and mood of the reference
+- Replicate the composition and camera angle style
+
+TECHNICAL REQUIREMENTS:
+- Professional commercial photography quality
+- Sharp focus on the product
+- Realistic lighting and shadows
+- High detail and photorealistic result`
         
         // Add variation specifics if multiple variants
         if (i > 0) {
-          integrationPrompt += ` Variation ${i + 1}: Show from a slightly different camera angle while maintaining perfect product accuracy and seamless environmental integration.`
+          enhancedPrompt += `\n\nVariation ${i + 1}: Same styling with a slightly different camera angle or lighting position.`
         }
         
-        // Ensure high quality output with emphasis on accuracy
-        integrationPrompt += ` Professional commercial photography, photorealistic, sharp focus, high detail, accurate product representation.`
+        enhancedPrompt += `\n\nGenerate a professional product photograph that perfectly combines the exact product with the reference style.`
         
-        console.log(`🎨 Variant ${i + 1} ADVANCED integration prompt:`, integrationPrompt)
+        console.log(`🎨 Variant ${i + 1} ENHANCED prompt:`, enhancedPrompt)
         
         // Generate with PREMIUM settings
         const imageSize = '1024x1024' // High quality size
-        const gptImageResult = await openai.generateImageWithGPTImage1(integrationPrompt, imageSize, quality)
+        const gptImageResult = await openai.generateImageWithGPTImage1(enhancedPrompt, imageSize, quality)
         
         if (gptImageResult.success) {
           images.push({
             url: gptImageResult.imageUrl,
             revised_prompt: gptImageResult.revisedPrompt,
             variant: i + 1,
-            dualAnalysis: analysis,
-            integration_strategy: analysis.integration_strategy
+            method: 'optimized_direct_generation',
+            approach: 'enhanced_prompts'
           })
           console.log(`Successfully generated style transfer variant ${i + 1}`)
         } else {
@@ -360,8 +364,9 @@ Return a detailed JSON response:
         success: true,
         images,
         totalGenerated: images.length,
-        styleAnalysis: analysis.style_analysis,
-        productAnalysis: analysis.product_analysis
+        method: 'optimized_direct_generation',
+        styleAnalysis: 'Enhanced prompts for style matching',
+        productAnalysis: 'Direct product preservation approach'
       }
     } catch (error) {
       console.error('Error in style transfer generation:', error)

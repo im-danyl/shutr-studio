@@ -18,7 +18,16 @@
       "Bash(node:*)",
       "Bash(npm run deploy:*)",
       "Bash(npm run:*)",
-      "Bash(move:*)"
+      "Bash(move:*)",
+      "Bash(taskkill:*)",
+      "Bash(netlify deploy:*)",
+      "Bash(netlify init:*)",
+      "Bash(netlify:*)",
+      "WebFetch(domain:shutr-studio.netlify.app)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:cookbook.openai.com)",
+      "Bash(rm:*)",
+      "Bash(npx supabase:*)"
     ],
     "deny": []
   }

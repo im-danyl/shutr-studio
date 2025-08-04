@@ -8,29 +8,45 @@ if (!OPENAI_API_KEY) {
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 
-// Helper function to make OpenAI API calls
+// Helper function to make OpenAI API calls with timeout
 const makeOpenAIRequest = async (messages, options = {}) => {
-  const response = await fetch(OPENAI_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-4o', // GPT Image 1 model name
-      messages,
-      max_tokens: options.maxTokens || 1000,
-      temperature: options.temperature || 0.7,
-      ...options
+  const timeout = options.timeout || 30000 // 30 second timeout
+  
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeout)
+  
+  try {
+    const response = await fetch(OPENAI_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o', // GPT Image 1 model name
+        messages,
+        max_tokens: options.max_tokens || 500, // Reduced for faster responses
+        temperature: options.temperature || 0.3, // Lower temperature for more consistent results
+        ...options
+      }),
+      signal: controller.signal
     })
-  })
 
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(`OpenAI API Error: ${error.error?.message || 'Unknown error'}`)
+    clearTimeout(timeoutId)
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(`OpenAI API Error: ${error.error?.message || 'Unknown error'}`)
+    }
+
+    return response.json()
+  } catch (error) {
+    clearTimeout(timeoutId)
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out - please try again')
+    }
+    throw error
   }
-
-  return response.json()
 }
 
 // Convert image file to base64 data URL
@@ -44,6 +60,68 @@ const fileToBase64 = (file) => {
 }
 
 export const openai = {
+  // Analyze style reference - handles both URLs (library styles) and Files (custom uploads)
+  analyzeStyleReference: async (styleSource) => {
+    try {
+      let imageUrl;
+      
+      // Handle both File objects (custom uploads) and URLs (library styles)
+      if (styleSource instanceof File) {
+        console.log('Converting custom uploaded style to base64...')
+        imageUrl = await fileToBase64(styleSource)
+      } else {
+        console.log('Using library style URL:', styleSource)
+        imageUrl = styleSource
+      }
+      
+      const messages = [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'text',
+              text: `Analyze this style reference and return JSON with these elements:
+              {
+                "lighting_style": "lighting type",
+                "background_type": "background description", 
+                "color_palette": ["main", "colors"],
+                "composition_style": "composition style",
+                "mood_aesthetic": "overall mood",
+                "props_elements": ["visible", "props"],
+                "key_visual_elements": "key characteristics"
+              }
+              Return only valid JSON.`
+            },
+            {
+              type: 'image_url',
+              image_url: {
+                url: imageUrl
+              }
+            }
+          ]
+        }
+      ]
+
+      const response = await makeOpenAIRequest(messages, { max_tokens: 600 })
+      let content = response.choices[0].message.content
+      content = content.replace(/```json\n?/g, '').replace(/\n?```/g, '')
+      const styleAnalysis = JSON.parse(content)
+      
+      console.log('Style analysis result:', styleAnalysis)
+      
+      return {
+        success: true,
+        analysis: styleAnalysis
+      }
+    } catch (error) {
+      console.error('Error analyzing style reference:', error)
+      return {
+        success: false,
+        error: error.message
+      }
+    }
+  },
+
   // Analyze product image to understand what we're working with
   analyzeProductImage: async (imageFile) => {
     try {
@@ -55,16 +133,14 @@ export const openai = {
           content: [
             {
               type: 'text',
-              text: `Analyze this product image and return a JSON object with the following information:
+              text: `Analyze this product and return JSON:
               {
-                "product_type": "category of the product (electronics, fashion, home_decor, beauty, food)",
-                "key_features": ["list", "of", "important", "product", "features", "to", "preserve"],
-                "dominant_colors": ["primary", "colors", "in", "image"],
-                "current_background": "description of current background",
-                "suggestions": "brief suggestions for styling this product"
+                "product_type": "product category",
+                "key_features": ["main", "features", "to", "preserve"],
+                "dominant_colors": ["colors"],
+                "current_background": "background type"
               }
-              
-              Only return valid JSON, no other text.`
+              Return only valid JSON.`
             },
             {
               type: 'image_url',
@@ -76,8 +152,10 @@ export const openai = {
         }
       ]
 
-      const response = await makeOpenAIRequest(messages, { maxTokens: 500 })
-      const analysis = JSON.parse(response.choices[0].message.content)
+      const response = await makeOpenAIRequest(messages, { max_tokens: 500 })
+      let content = response.choices[0].message.content
+      content = content.replace(/```json\n?/g, '').replace(/\n?```/g, '')
+      const analysis = JSON.parse(content)
       
       return {
         success: true,
@@ -92,8 +170,8 @@ export const openai = {
     }
   },
 
-  // Generate styled product images based on reference style (main function used by hooks)
-  generateStyledProduct: async (productImageFile, styleReferenceUrl, options = {}) => {
+  // Generate styled product images with proper style transfer
+  generateStyledProduct: async (productImageFile, styleReference, options = {}) => {
     try {
       // Extract options with cost-optimized defaults
       const {
@@ -104,83 +182,93 @@ export const openai = {
         productDescription = ''
       } = options
 
-      console.log(`Starting generation: ${variantCount} variants`)
+      console.log(`Starting OPTIMIZED STYLE TRANSFER generation: ${variantCount} variants`)
+      console.log('Product file type:', productImageFile.type)
+      console.log('Product file size:', productImageFile.size)
+      console.log('Style reference:', styleReference)
       
-      // Step 1: Analyze the product image to understand what we're working with
-      const analysisResult = await openai.analyzeProductImage(productImageFile)
-      if (!analysisResult.success) {
-        console.warn('Product analysis failed, continuing without analysis')
+      // OPTIMIZATION: Run both analyses in PARALLEL to save time
+      console.log('Running style and product analysis in parallel...')
+      const [styleAnalysisResult, productAnalysisResult] = await Promise.all([
+        openai.analyzeStyleReference(styleReference),
+        openai.analyzeProductImage(productImageFile)
+      ])
+      
+      if (!styleAnalysisResult.success) {
+        throw new Error('Failed to analyze style reference. Style transfer cannot proceed without understanding the target aesthetic.')
+      }
+      
+      if (!productAnalysisResult.success) {
+        console.warn('Product analysis failed, continuing with basic product description')
       }
 
-      // Step 2: Generate variations using DALL-E 3
+      // Step 3: Generate style transfer variations
       const images = []
+      const styleAnalysis = styleAnalysisResult.analysis
+      const productAnalysis = productAnalysisResult.success ? productAnalysisResult.analysis : null
+      
+      console.log('Style Analysis:', styleAnalysis)
+      console.log('Product Analysis:', productAnalysis)
       
       for (let i = 0; i < variantCount; i++) {
-        console.log(`Generating variant ${i + 1}/${variantCount}`)
+        console.log(`Generating style transfer variant ${i + 1}/${variantCount}`)
         
-        // Create detailed prompt for DALL-E 3
-        let basePrompt = `Professional product photography of a high-quality product. `
+        // Create concise STYLE TRANSFER prompt
+        const productDesc = productAnalysis ? 
+          `${productAnalysis.product_type} with ${productAnalysis.key_features.join(', ')}` : 
+          'the product'
         
-        // Add product context if available
-        if (analysisResult.success) {
-          const analysis = analysisResult.analysis
-          basePrompt += `The product is a ${analysis.product_type} with key features: ${analysis.key_features.join(', ')}. `
+        let styleTransferPrompt = `Professional product photography of ${productDesc}. `
+        styleTransferPrompt += `Style: ${styleAnalysis.lighting_style} lighting, ${styleAnalysis.background_type} background, ${styleAnalysis.mood_aesthetic} mood. `
+        
+        if (styleAnalysis.color_palette?.length > 0) {
+          styleTransferPrompt += `Colors: ${styleAnalysis.color_palette.join(', ')}. `
         }
         
-        // Add custom descriptions if provided
-        if (productDescription) {
-          basePrompt += `Product details: ${productDescription}. `
+        if (styleAnalysis.props_elements?.length > 0) {
+          styleTransferPrompt += `Elements: ${styleAnalysis.props_elements.join(', ')}. `
         }
         
-        if (styleDescription) {
-          basePrompt += `Style direction: ${styleDescription}. `
-        }
+        styleTransferPrompt += `${styleAnalysis.key_visual_elements}. `
         
-        // Add variation-specific instructions
         if (i > 0) {
-          basePrompt += `Variation ${i + 1}: Show from a slightly different angle or with adjusted lighting composition. `
+          styleTransferPrompt += `Variation ${i + 1}: different angle. `
         }
         
-        // Add quality and technical requirements
-        basePrompt += `High-quality commercial photography, professional lighting, sharp focus on product, clean composition, suitable for e-commerce use.`
+        styleTransferPrompt += `High-quality commercial photography, sharp focus.`
         
-        // Map aspect ratio to GPT Image 1 size (optimized for low cost)
-        let imageSize = '1024x1024' // Default square - cheapest option (~$0.02)
-        if (aspectRatio === '16:9' || aspectRatio === 'landscape') {
-          imageSize = '1024x1024' // Force square to minimize cost instead of 1792x1024
-        } else if (aspectRatio === '9:16' || aspectRatio === 'portrait') {
-          imageSize = '1024x1024' // Force square to minimize cost instead of 1024x1792
-        }
+        console.log(`Variant ${i + 1} prompt:`, styleTransferPrompt)
         
-        // Note: Using 1024x1024 for all ratios to keep costs at ~$0.02 per image
-        // Users can crop/adjust aspect ratio after download if needed
-        
-        // Generate image with DALL-E 3 (GPT Image 1 requires organization verification)
-        const gptImageResult = await openai.generateImageWithGPTImage1(basePrompt, imageSize, quality)
+        // Generate with optimized settings
+        const imageSize = '1024x1024' // Cost-optimized
+        const gptImageResult = await openai.generateImageWithGPTImage1(styleTransferPrompt, imageSize, quality)
         
         if (gptImageResult.success) {
           images.push({
             url: gptImageResult.imageUrl,
             revised_prompt: gptImageResult.revisedPrompt,
-            variant: i + 1
+            variant: i + 1,
+            styleAnalysis,
+            productAnalysis
           })
-          console.log(`Successfully generated variant ${i + 1}`)
+          console.log(`Successfully generated style transfer variant ${i + 1}`)
         } else {
           console.error(`Failed to generate variant ${i + 1}:`, gptImageResult.error)
           throw new Error(`Failed to generate variant ${i + 1}: ${gptImageResult.error}`)
         }
       }
 
-      console.log(`Generation complete: ${images.length} images generated`)
+      console.log(`Style transfer complete: ${images.length} images generated`)
       
       return {
         success: true,
         images,
         totalGenerated: images.length,
-        analysis: analysisResult.success ? analysisResult.analysis : null
+        styleAnalysis: styleAnalysis,
+        productAnalysis: productAnalysis
       }
     } catch (error) {
-      console.error('Error generating styled product:', error)
+      console.error('Error in style transfer generation:', error)
       return {
         success: false,
         error: error.message
@@ -188,10 +276,12 @@ export const openai = {
     }
   },
 
-  // Generate DALL-E 3 image (GPT Image 1 requires organization verification)
-  // Default to smallest size and standard quality to minimize costs
+  // Generate DALL-E 3 image with timeout
   generateImageWithGPTImage1: async (prompt, size = '1024x1024', quality = 'low') => {
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 60000) // 60 second timeout for image generation
+      
       const response = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
@@ -204,12 +294,15 @@ export const openai = {
           n: 1,
           size,
           quality: quality === 'low' ? 'standard' : 'hd'
-        })
+        }),
+        signal: controller.signal
       })
+
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(`GPT Image 1 API Error: ${error.error?.message || 'Unknown error'}`)
+        throw new Error(`DALL-E 3 API Error: ${error.error?.message || 'Unknown error'}`)
       }
 
       const result = await response.json()
@@ -219,7 +312,14 @@ export const openai = {
         revisedPrompt: result.data[0].revised_prompt || prompt
       }
     } catch (error) {
-      console.error('Error generating image with GPT Image 1:', error)
+      if (error.name === 'AbortError') {
+        console.error('DALL-E 3 generation timed out')
+        return {
+          success: false,
+          error: 'Image generation timed out - please try again'
+        }
+      }
+      console.error('Error generating image with DALL-E 3:', error)
       return {
         success: false,
         error: error.message

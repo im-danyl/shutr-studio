@@ -7,6 +7,7 @@ import SuccessCelebration from '../components/ui/SuccessCelebration';
 import { useStyleReferences } from '../hooks/useStyleReferences';
 import FilterBar from '../components/styles/FilterBar';
 import StyleGrid from '../components/styles/StyleGrid';
+import useGeneration from '../hooks/useGeneration';
 
 
 // Utility function for className merging
@@ -504,20 +505,47 @@ const SettingsAccordion = ({ settings, onSettingsChange }) => {
 };
 
 // Generated Gallery Component
-const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, settings, onDownloadImage }) => {
+const GeneratedGallery = ({ images, isLoading, productImage, referenceImage, settings, onDownloadImage, progress, currentStep, isRecovering }) => {
   if (isLoading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <Card style={{ padding: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <div className="spinner-wrapper"><div className="spinner" /></div>
-            <div>
-              <h3 className="h3" style={{ margin: 0 }}>Generating your photos...</h3>
+            <div style={{ flex: 1 }}>
+              <h3 className="h3" style={{ margin: 0 }}>
+                {isRecovering ? 'Resuming your generation...' : 'Generating your photos...'}
+              </h3>
               <p className="body" style={{ color: 'var(--text-muted)', margin: 0, marginTop: '4px' }}>
-                This usually takes 30-60 seconds
+                {currentStep || (isRecovering ? 'Continuing from where we left off' : 'This usually takes 30-60 seconds')}
               </p>
+              {progress > 0 && (
+                <div style={{ marginTop: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Progress</span>
+                    <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{progress}%</span>
+                  </div>
+                  <div style={{ width: '100%', height: '4px', backgroundColor: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div 
+                      style={{ 
+                        width: `${progress}%`, 
+                        height: '100%', 
+                        backgroundColor: 'var(--accent-solid)', 
+                        transition: 'width 0.3s ease'
+                      }} 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
+          {isRecovering && (
+            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '8px' }}>
+              <p style={{ margin: 0, fontSize: '14px', color: '#0369a1' }}>
+                ✅ Your generation is persistent! It will continue even if you refresh the page.
+              </p>
+            </div>
+          )}
         </Card>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
           {Array.from({ length: settings.variants }).map((_, i) => (
@@ -601,9 +629,11 @@ const Generate = () => {
   const [productImage, setProductImage] = useState(() => {
     return sessionStorage.getItem('shutr-productImage') || null;
   });
+  const [productImageFile, setProductImageFile] = useState(null);
   const [customReference, setCustomReference] = useState(() => {
     return sessionStorage.getItem('shutr-customReference') || null;
   });
+  const [customReferenceFile, setCustomReferenceFile] = useState(null);
   const [settings, setSettings] = useState(() => {
     const saved = sessionStorage.getItem('shutr-settings');
     return saved ? JSON.parse(saved) : {
@@ -624,6 +654,9 @@ const Generate = () => {
   // Auth and Credit stores
   const { user } = useAuthStore();
   const { credits, fetchCredits, consumeCredits, checkCreditsAvailable } = useCreditStore();
+  
+  // AI Generation hook
+  const { generateImages, loading: aiLoading, progress, currentStep: aiStep, error: aiError, results: aiResults, isRecovering } = useGeneration();
 
   // Filter states for style library
   const [styleFilters, setStyleFilters] = useState({})
@@ -664,8 +697,8 @@ const Generate = () => {
   }, [generatedImages]);
 
   const handleGenerate = async () => {
-    if (!productImage || !user) {
-      console.log('Missing productImage or user:', { productImage: !!productImage, user: !!user });
+    if (!productImageFile || !user) {
+      console.log('Missing productImageFile or user:', { productImageFile: !!productImageFile, user: !!user });
       return;
     }
     
@@ -677,57 +710,57 @@ const Generate = () => {
     }
 
     try {
-      console.log('Starting generation process...');
+      console.log('Starting real AI generation process...');
       setIsGenerating(true);
       setGeneratedImages([]);
       setCurrentStep(3);
 
-      // Generate a unique ID for this generation
-      const generationId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      console.log('Generated ID:', generationId);
-
-      // Try to consume credits with timeout and fallback
-      console.log('Consuming credits...');
-      try {
-        const creditPromise = consumeCredits(user.id, settings.variants, generationId);
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Credit consumption timeout')), 10000)
-        );
-        
-        await Promise.race([creditPromise, timeoutPromise]);
-        console.log('Credits consumed successfully');
-      } catch (creditError) {
-        console.warn('Credit consumption failed, proceeding with generation:', creditError.message);
-        // Continue with generation even if credits fail (for testing)
+      // Use the stored file object
+      if (!productImageFile) {
+        throw new Error('Product image file not available. Please re-upload your product image.');
       }
 
-      // Simulate AI generation
-      console.log('Simulating AI generation...');
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      // Get the style reference - either custom file or library URL
+      let styleReference;
+      if (customReferenceFile) {
+        // User uploaded custom style - use the File object
+        styleReference = customReferenceFile;
+        console.log('Using custom uploaded style file:', customReferenceFile.name);
+      } else if (selectedReference?.url) {
+        // User selected from library - use the URL
+        styleReference = selectedReference.url;
+        console.log('Using library style URL:', selectedReference.url);
+      } else {
+        throw new Error('No reference style selected');
+      }
 
-      const mockGenerated = [
-        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=512&h=512&fit=crop',
-        'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=512&h=512&fit=crop',
-        'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=512&h=512&fit=crop',
-        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=512&h=512&fit=crop'
-      ].slice(0, settings.variants);
-      
-      console.log('Setting generated images:', mockGenerated);
-      setGeneratedImages(mockGenerated);
-      
-      // Show success celebration
-      setTimeout(() => {
-        setShowSuccessCelebration(true);
-      }, 500);
+      // Use the actual AI generation hook
+      const generationResult = await generateImages({
+        productImage: productImageFile,
+        styleReference: styleReference,
+        variantCount: settings.variants,
+        aspectRatio: settings.aspectRatio,
+        quality: 'low', // Always use low quality for cost optimization
+        styleDescription: selectedReference?.description || '',
+        productDescription: ''
+      });
+
+      if (generationResult.success) {
+        // Extract URLs from the results
+        const generatedUrls = generationResult.results.map(result => result.url);
+        console.log('AI generation successful:', generatedUrls);
+        setGeneratedImages(generatedUrls);
+        
+        // Show success celebration
+        setTimeout(() => {
+          setShowSuccessCelebration(true);
+        }, 500);
+      } else {
+        throw new Error('AI generation failed');
+      }
     } catch (error) {
       console.error('Generation failed:', error);
-      alert(`Generation failed: ${error.message}`);
-      // Try to refund credits if they were consumed
-      try {
-        // Credits would be refunded automatically by the backend in a real scenario
-      } catch (refundError) {
-        console.error('Refund failed:', refundError);
-      }
+      alert(`Generation failed: ${error.message}. Please try again.`);
     } finally {
       console.log('Generation process completed');
       setIsGenerating(false);
@@ -737,7 +770,9 @@ const Generate = () => {
   const resetFlow = () => {
     setCurrentStep(1);
     setProductImage(null);
+    setProductImageFile(null);
     setCustomReference(null);
+    setCustomReferenceFile(null);
     setGeneratedImages([]);
     setSelectedReference(null);
     setIsGenerating(false);
@@ -757,6 +792,7 @@ const Generate = () => {
   const clearSelection = () => {
     setSelectedReference(null);
     setCustomReference(null);
+    setCustomReferenceFile(null);
   };
 
   const hasActiveFilters = Object.values(styleFilters).some(value => value && value !== 'All');
@@ -781,12 +817,14 @@ const Generate = () => {
 
   const handleCustomUpload = (file) => {
     setCustomReference(URL.createObjectURL(file));
+    setCustomReferenceFile(file);
     setSelectedReference(null);
   };
 
 
   const handleProductUpload = (file) => {
     setProductImage(URL.createObjectURL(file));
+    setProductImageFile(file);
   }
 
   const handleDownloadImage = async (imageUrl, filename) => {
@@ -929,7 +967,7 @@ const Generate = () => {
                      <Card style={{ padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
                         <h3 className="h3-card" style={{ margin: 0 }}>Your Product Image</h3>
                         <img src={productImage} alt="Uploaded product" style={{ maxWidth: '80%', maxHeight: '250px', borderRadius: 'var(--radius)', objectFit: 'contain' }} />
-                        <Button variant="outline" onClick={() => setProductImage(null)}>Choose a different image</Button>
+                        <Button variant="outline" onClick={() => { setProductImage(null); setProductImageFile(null); }}>Choose a different image</Button>
                      </Card>
                   ) : (
                     <UploadDropzone onFileUploaded={handleProductUpload} />
@@ -950,7 +988,7 @@ const Generate = () => {
                   <Button variant="outline" onClick={() => setCurrentStep(1)}>Back to Style</Button>
                   <Button 
                     onClick={handleGenerate} 
-                    disabled={!productImage || !user || (credits !== null && credits < settings.variants)}
+                    disabled={!productImageFile || !user || (credits !== null && credits < settings.variants)}
                   >
                     Generate Images {user && credits !== null && `(${settings.variants} credit${settings.variants !== 1 ? 's' : ''})`}
                   </Button>
@@ -965,7 +1003,7 @@ const Generate = () => {
                   <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">Here are the results. Download your favorites or regenerate.</p>
                 </div>
 
-                {!isGenerating && generatedImages.length > 0 && (
+                {!isGenerating && !aiLoading && generatedImages.length > 0 && (
                     <Card style={{ padding: '16px' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                             <Button onClick={handleGenerate}><RefreshCwIcon style={{ marginRight: '8px' }} />Regenerate</Button>
@@ -975,9 +1013,19 @@ const Generate = () => {
                     </Card>
                 )}
 
-                <GeneratedGallery isLoading={isGenerating} images={generatedImages} productImage={productImage} referenceImage={customReference || selectedReference?.url} settings={settings} onDownloadImage={handleDownloadImage} />
+                <GeneratedGallery 
+                  isLoading={isGenerating || aiLoading} 
+                  images={generatedImages.length > 0 ? generatedImages : (aiResults || []).map(r => r.url)} 
+                  productImage={productImage} 
+                  referenceImage={customReference || selectedReference?.url} 
+                  settings={settings} 
+                  onDownloadImage={handleDownloadImage}
+                  progress={progress}
+                  currentStep={aiStep}
+                  isRecovering={isRecovering}
+                />
 
-                {!isGenerating && (
+                {!isGenerating && !aiLoading && (
                   <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
                     <Button size="lg" variant="outline" onClick={resetFlow}>Start Over</Button>
                   </div>

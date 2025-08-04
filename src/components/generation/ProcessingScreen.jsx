@@ -7,7 +7,8 @@ const ProcessingScreen = ({
   variantCount = 1,
   onCancel,
   canCancel = false,
-  estimatedTime = 45 
+  estimatedTime = 45,
+  isRecovering = false
 }) => {
   const getProgressColor = (progress) => {
     if (progress < 30) return 'bg-orange-500'
@@ -33,11 +34,14 @@ const ProcessingScreen = ({
           </div>
           
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            AI is Creating Your Photos
+            {isRecovering ? 'Resuming Your Generation' : 'AI is Creating Your Photos'}
           </h2>
           
           <p className="text-gray-600 dark:text-gray-400">
-            Generating {variantCount} high-quality variant{variantCount !== 1 ? 's' : ''} of your product
+            {isRecovering 
+              ? `Continuing with ${variantCount} variant${variantCount !== 1 ? 's' : ''} of your product`
+              : `Generating ${variantCount} high-quality variant${variantCount !== 1 ? 's' : ''} of your product`
+            }
           </p>
         </div>
 
@@ -102,6 +106,27 @@ const ProcessingScreen = ({
           <li>• Multiple variations ensure you get the perfect shot</li>
         </ul>
       </div>
+
+      {/* Recovery/Warning Section */}
+      {isRecovering ? (
+        <div className="mt-4 p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
+          <h3 className="text-sm font-medium text-green-800 dark:text-green-300 mb-2">
+            ✅ Generation Recovered:
+          </h3>
+          <p className="text-sm text-green-700 dark:text-green-400">
+            Your generation is continuing from where it left off. Your credits are safe!
+          </p>
+        </div>
+      ) : (
+        <div className="mt-4 p-4 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
+          <h3 className="text-sm font-medium text-orange-800 dark:text-orange-300 mb-2">
+            ⚠️ Important:
+          </h3>
+          <p className="text-sm text-orange-700 dark:text-orange-400">
+            Your generation is now persistent! You can safely refresh or navigate away - it will continue in the background.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

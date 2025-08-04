@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { openai } from '../lib/openai'
 import useAuthStore from '../store/authStore'
 import useCreditStore from '../store/creditStore'
+import generationsService from '../lib/generations'
 
 const useGeneration = () => {
   const [loading, setLoading] = useState(false)
@@ -10,18 +11,106 @@ const useGeneration = () => {
   const [results, setResults] = useState([])
   const [error, setError] = useState(null)
   const [generationId, setGenerationId] = useState(null)
+  const [isRecovering, setIsRecovering] = useState(false)
 
   const { user } = useAuthStore()
-  const { consumeCredits, refundCredits, checkCreditsAvailable } = useCreditStore()
+  const { fetchCredits, checkCreditsAvailable } = useCreditStore()
 
-  // Generate styled product images
+  // Check for active generation on mount (recovery)
+  useEffect(() => {
+    if (user && !loading && !generationId) {
+      checkForActiveGeneration()
+    }
+  }, [user])
+
+  const checkForActiveGeneration = async () => {
+    try {
+      setIsRecovering(true)
+      const result = await generationsService.getActiveGeneration(user.id)
+      
+      if (result.success && result.generation) {
+        const gen = result.generation
+        console.log('Found active generation, recovering:', gen.id)
+        
+        setGenerationId(gen.id)
+        setProgress(50) // Estimate 50% progress for processing generations
+        setCurrentStep('Resuming generation...')
+        
+        if (gen.status === 'processing') {
+          setLoading(true)
+          // Continue monitoring this generation
+          monitorGeneration(gen.id)
+        } else if (gen.status === 'completed' && gen.generated_images) {
+          // Show completed results
+          const processedResults = gen.generated_images.map((imageUrl, index) => ({
+            id: `${gen.id}_${index}`,
+            url: imageUrl,
+            index,
+            generationId: gen.id,
+            createdAt: gen.created_at
+          }))
+          setResults(processedResults)
+          setProgress(100)
+          setCurrentStep('Completed')
+        }
+      }
+    } catch (error) {
+      console.error('Error checking for active generation:', error)
+    } finally {
+      setIsRecovering(false)
+    }
+  }
+
+  const monitorGeneration = async (genId) => {
+    // Poll generation status
+    const pollInterval = setInterval(async () => {
+      try {
+        const result = await generationsService.getGeneration(genId)
+        if (result.success && result.generation) {
+          const gen = result.generation
+          
+          // Since we don't have progress columns, estimate progress
+          setProgress(75)
+          setCurrentStep('Checking generation status...')
+          
+          if (gen.status === 'completed') {
+            clearInterval(pollInterval)
+            if (gen.generated_images) {
+              const processedResults = gen.generated_images.map((imageUrl, index) => ({
+                id: `${gen.id}_${index}`,
+                url: imageUrl,
+                index,
+                generationId: gen.id,
+                createdAt: gen.created_at
+              }))
+              setResults(processedResults)
+            }
+            setProgress(100)
+            setCurrentStep('Completed')
+            setLoading(false)
+          } else if (gen.status === 'failed') {
+            clearInterval(pollInterval)
+            setError(gen.error_message || 'Generation failed')
+            setLoading(false)
+          }
+        }
+      } catch (error) {
+        console.error('Error monitoring generation:', error)
+      }
+    }, 3000) // Poll every 3 seconds
+
+    // Clear interval after 10 minutes
+    setTimeout(() => clearInterval(pollInterval), 600000)
+  }
+
+  // Generate styled product images with persistence
   const generateImages = useCallback(async (options = {}) => {
     const {
       productImage,
       styleReference,
       variantCount = 1,
-      aspectRatio = '1:1', // Always square for lowest cost
-      quality = 'low', // Always low for lowest cost
+      aspectRatio = '1:1',
+      quality = 'low',
       styleDescription = '',
       productDescription = ''
     } = options
@@ -39,30 +128,39 @@ const useGeneration = () => {
       throw new Error('Insufficient credits')
     }
 
-    const newGenerationId = `gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
     setLoading(true)
     setProgress(0)
     setError(null)
     setResults([])
-    setGenerationId(newGenerationId)
-    setCurrentStep('Preparing generation...')
+    setCurrentStep('Creating persistent generation...')
+
+    let persistentGenerationId = null
 
     try {
-      // Step 1: Consume credits
-      setCurrentStep('Consuming credits...')
+      // Step 1: Create persistent generation in database
+      setProgress(5)
+      const createResult = await generationsService.createGeneration(
+        user.id,
+        URL.createObjectURL(productImage), // Convert File to URL for upload
+        styleReference,
+        variantCount,
+        { aspectRatio, quality, styleDescription, productDescription }
+      )
+
+      if (!createResult.success) {
+        throw new Error(createResult.error || 'Failed to create generation')
+      }
+
+      persistentGenerationId = createResult.generationId
+      setGenerationId(persistentGenerationId)
+      
+      // Update progress in database
+      await generationsService.updateProgress(persistentGenerationId, 10, 'Analyzing images...')
+      setCurrentStep('Analyzing style and product images...')
       setProgress(10)
       
-      await consumeCredits(user.id, variantCount, newGenerationId)
-      
-      // Step 2: Prepare images and prompts
-      setCurrentStep('Analyzing images...')
-      setProgress(20)
-      
-      // Simulate analysis time
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Step 3: Generate images
+      // Step 2: Generate images
+      await generationsService.updateProgress(persistentGenerationId, 30, `Generating ${variantCount} variants...`)
       setCurrentStep(`Generating ${variantCount} variant${variantCount !== 1 ? 's' : ''}...`)
       setProgress(30)
       
@@ -78,22 +176,35 @@ const useGeneration = () => {
         }
       )
       
-      setProgress(80)
-      setCurrentStep('Processing results...')
-      
       if (!generationResult.success) {
         throw new Error(generationResult.error || 'Generation failed')
       }
       
-      // Step 4: Process and store results
+      // Step 3: Complete generation in database
+      await generationsService.updateProgress(persistentGenerationId, 90, 'Saving results...')
+      setCurrentStep('Saving results...')
       setProgress(90)
       
+      const imageUrls = generationResult.images.map(img => img.url)
+      
+      const completeResult = await generationsService.completeGeneration(
+        persistentGenerationId,
+        imageUrls,
+        generationResult.styleAnalysis,
+        generationResult.productAnalysis
+      )
+      
+      if (!completeResult.success) {
+        console.error('Failed to complete generation in database:', completeResult.error)
+      }
+      
+      // Step 4: Process results for UI
       const processedResults = generationResult.images.map((image, index) => ({
-        id: `${newGenerationId}_${index}`,
+        id: `${persistentGenerationId}_${index}`,
         url: image.url,
         revisedPrompt: image.revised_prompt,
         index,
-        generationId: newGenerationId,
+        generationId: persistentGenerationId,
         createdAt: new Date().toISOString()
       }))
       
@@ -101,13 +212,16 @@ const useGeneration = () => {
       setProgress(100)
       setCurrentStep('Complete!')
       
-      // Simulate final processing
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Update final status
+      await generationsService.updateProgress(persistentGenerationId, 100, 'Complete!')
+      
+      // Refresh credits to show updated balance
+      await fetchCredits(user.id)
       
       return {
         success: true,
         results: processedResults,
-        generationId: newGenerationId,
+        generationId: persistentGenerationId,
         totalGenerated: processedResults.length,
         creditsUsed: variantCount
       }
@@ -116,22 +230,22 @@ const useGeneration = () => {
       console.error('Generation failed:', error)
       setError(error.message || 'Generation failed')
       
-      // Attempt to refund credits on failure
-      try {
-        if (user && newGenerationId) {
-          await refundCredits(user.id, variantCount, newGenerationId)
+      // Fail generation in database and refund credits
+      if (persistentGenerationId) {
+        try {
+          await generationsService.failGeneration(persistentGenerationId, error.message)
+          await fetchCredits(user.id) // Refresh credits after refund
+        } catch (failError) {
+          console.error('Failed to fail generation in database:', failError)
         }
-      } catch (refundError) {
-        console.error('Failed to refund credits:', refundError)
       }
       
       throw error
       
     } finally {
       setLoading(false)
-      setCurrentStep('')
     }
-  }, [user, consumeCredits, refundCredits, checkCreditsAvailable])
+  }, [user, checkCreditsAvailable, fetchCredits])
 
   // Regenerate with same parameters
   const regenerate = useCallback(async (previousOptions) => {
@@ -205,6 +319,7 @@ const useGeneration = () => {
     results,
     error,
     generationId,
+    isRecovering,
     
     // Actions
     generateImages,
@@ -213,6 +328,7 @@ const useGeneration = () => {
     clearResults,
     downloadResult,
     downloadAll,
+    checkForActiveGeneration,
     
     // Computed
     hasResults: results.length > 0,

@@ -22,24 +22,48 @@ export const generationsService = {
         // Note: File object will be passed directly to OpenAI generation
       }
       
-      // Upload product image to storage for persistence
-      console.log('Uploading product image...')
-      const productFile = await fetch(productImageUrl).then(r => r.blob())
-      const productFileName = `product_${Date.now()}.jpg`
+      // Try to upload product image to storage for persistence, with fallback
+      let persistentProductUrl = productImageUrl // Fallback to original URL
       
-      const { data: productUploadData, error: productUploadError } = await supabase.storage
-        .from('product-images')
-        .upload(`${userId}/${productFileName}`, productFile)
-      
-      if (productUploadError) {
-        throw new Error(`Failed to upload product image: ${productUploadError.message}`)
+      try {
+        console.log('Uploading product image...')
+        const productFile = await fetch(productImageUrl).then(r => r.blob())
+        const productFileName = `product_${Date.now()}.jpg`
+        
+        console.log(`Uploading ${productFileName} (${Math.round(productFile.size / 1024)}KB)...`)
+        
+        // Add timeout wrapper for upload
+        const uploadPromise = supabase.storage
+          .from('product-images')
+          .upload(`${userId}/${productFileName}`, productFile)
+        
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Upload timeout after 30 seconds')), 30000)
+        )
+        
+        const { data: productUploadData, error: productUploadError } = await Promise.race([
+          uploadPromise,
+          timeoutPromise
+        ])
+        
+        if (productUploadError) {
+          throw productUploadError
+        }
+        
+        console.log('Upload successful, getting public URL...')
+        
+        const { data: productUrlData } = supabase.storage
+          .from('product-images')
+          .getPublicUrl(productUploadData.path)
+        
+        persistentProductUrl = productUrlData.publicUrl
+        console.log('Using persistent storage URL for generation record')
+        
+      } catch (uploadError) {
+        console.warn('Product image upload failed, using temporary URL:', uploadError.message)
+        console.log('Generation will continue with temporary product URL')
+        // Continue with original URL - generation can still work
       }
-      
-      const { data: productUrlData } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(productUploadData.path)
-      
-      const persistentProductUrl = productUrlData.publicUrl
       
       // Use existing database function that we know exists
       console.log('Creating generation with existing function...')
